@@ -507,27 +507,27 @@ function circleCollision(obj1, obj2) {
 
 function keyFunction(e){
   if (e.keyCode == 81) { //q
-    cx-=1.0;
+    camAngle-=5.0;
     console.log("cx: "+cx)
   }
   if (e.keyCode == 69) { //e
-    cx+=1.0;
+    camAngle+=5.0;
     console.log("cx: "+cx)
   } 
   if(e.keyCode == 65) { //a
-    cy-=1.0;
+    cx-=1.0;
     console.log("cy: "+cy)
   }
   if (e.keyCode == 68) { //d
-    cy+=1.0;
+    cx+=1.0;
     console.log("cy: "+cy)
   } 
   if (e.keyCode == 87) { //w
-    cz+=1.0;
+    cz-=1.0;
     console.log("cz: "+cz)
   } 
   if(e.keyCode == 83) { //s
-    cz-=1.0;
+    cz+=1.0;
     console.log("cz: "+cz)
   }
   if (e.keyCode == 80) { //p
@@ -539,11 +539,11 @@ function keyFunction(e){
     console.log("camElev: "+camElev)
   }
   if (e.keyCode == 79) { //o
-    camAngle+=5.0;
+    cy+=1.0;
     console.log("camAngle: "+camAngle)
   } 
   if(e.keyCode == 75) { //k
-    camAngle-=5.0;
+    cy-=1.0;
     console.log("camAngle: "+camAngle)
   }
     
