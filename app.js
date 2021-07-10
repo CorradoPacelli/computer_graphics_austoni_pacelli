@@ -1,6 +1,6 @@
 //VAR DEFINITION
 var program0;
-var program1;
+//var program1;
 var gl;
 var shaderDir;
 var baseDir;
@@ -229,12 +229,14 @@ async function init() {
 
   });
 
+  /*
   await utils.loadFiles([shaderDir + 'vs_cube.glsl', shaderDir + 'fs_cube.glsl'], function (shaderText) {
     var vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, shaderText[0]);
     var fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, shaderText[1]);
     // The program used for drawing the "environment" cube
     program1 = utils.createProgram(gl, vertexShader, fragmentShader);
   });
+  */
 
 
 
@@ -284,20 +286,23 @@ function getShadersPos() {
   specularColorHandle[0] = gl.getUniformLocation(program0, 'specularColor');
   specShineHandle[0] = gl.getUniformLocation(program0, 'SpecShine');
 
+  /*
   // Here instead, we get attribute and uniform needed for the environmental cube in which we use program1
   positionAttributeLocation[1] = gl.getAttribLocation(program1, "a_position");
   matrixLocation[1] = gl.getUniformLocation(program1, "matrix");
+  */
 
 }
 
 /* In this function we create the buffers, bind them, and enable them */
 function setBuffers() {
   //These are the buffers for the "environmental" cube (Note that we use here program1)
+  /*
   gl.useProgram(program1);
   vaos[7] = gl.createVertexArray();   
   gl.bindVertexArray(vaos[7]);
-
-  
+  */
+  /*
   var positionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
@@ -307,6 +312,7 @@ function setBuffers() {
   var indexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+  */
 
   // Here we do the same but for the other elements in the scene, we can loop over since they use the same program (program0)
   for (let i = 0; i < object.length; i++) {
@@ -369,6 +375,7 @@ function drawObjects() {
   gl.clearColor(0.85, 0.85, 0.85, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
+  /*
   //draw the cube environment by passing the uniform
   gl.useProgram(program1);
 
@@ -378,11 +385,13 @@ function drawObjects() {
 
   gl.bindVertexArray(vaos[7]);
   gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+  */
 
 
   // we draw the objects by passing the uniforms to shaders
 
   for (let i = 0; i < object.length; ++i) {
+    console.log(object[i].modelStr)
     gl.useProgram(program0);
     var worldViewMatrix = utils.multiplyMatrices(viewMatrix, object[i].worldMatrix);
     var worldViewProjection = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix);
