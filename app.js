@@ -506,6 +506,10 @@ function circleCollision(obj1, obj2) {
 //TMP FUNCTIONS FOR MOVING CAMERA
 
 function keyFunction(e){
+  // q e e ti fanno girare la telecamera a destra e a sinistra
+  // a e d ti fanno spostare a destra e a sinistra
+  // w e s ti fanno spostare avanti e distro
+  // p e l ti fanno spostare l'elevazione della telecamera
   if (e.keyCode == 81) { //q
     camAngle-=5.0;
     console.log("cx: "+cx)
