@@ -1,256 +1,157 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
 <head>
+    <link rel="icon" href="model/favicon.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Whack a Mole by Austoni & Pacelli</title>
     <style type="text/css">
       body {
         margin: 0;
-        background-color: grey;
+        background-color: gray;
       }
-  
       canvas {
-  
         display: block;
-  
-      }
-  
-      #Loading {
-        text-align: center;
-        position: absolute;
-        z-index: 1;
-        width: 100%;
-        height: 100%;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
         background-color: white;
-        padding: auto;
-        align-items: center;
-        display: flex;
-        justify-content: center;
-        overflow: auto;
-        font-size: 300%;
-        color: darkblue;
-        background-color: RGBA(255, 255, 255, 0.7);
       }
-  
-      #Lost {
-        text-align: center;
-        position: absolute;
-        z-index: 1;
+
+      .slider
+      {
+        -webkit-appearance: none;
         width: 100%;
-        height: 100%;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        background-color: white;
-        padding: auto;
-        align-items: center;
-        overflow: auto;
-        font-size: 300%;
-        color: red;
-        background-color: RGBA(255, 255, 255, 0.7);
+        height: 25px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
       }
+
+    /* basic positioning */
+      .legend { list-style: outside; table-layout:fixed;}
+      .legend li { float: left; margin-right: 40px; }
+      .legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+      /* your colors */
+      .legend .protons { background-color: #285fF8; }
+      .legend .neutrons { background-color: #f02623; }
+      .legend .electrons { background-color: #e4f323; }
+
+        </style>
+
+        <script type="text/javascript" src="./src/vars.js"></script>
+        <script type="text/javascript" src="./src/webgl-obj-loader.min.js"></script>
+        <script type="text/javascript" src="./src/utils.js"></script>
+        <script type="text/javascript" src="./src/console.js"></script>
+        <script type="text/javascript" src="./src/app.js"></script>
+</head>
+
+
+<body>
+
+  <canvas id="c" style="background: rgb(90,89,93);background: linear-gradient(0deg, rgba(90,89,93,1) 0%, rgba(17,12,3,1) 100%);"></canvas>
   
-      b {
-        color: darkblue;
-      }
-    </style>
-    <!-- 
-    <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon">
-    <link rel="icon" href="./favicon.ico" type="image/x-icon">
-    <script type="text/javascript" src="./cubeDefinition.js"></script>
-    -->
-    <script type="text/javascript" src="./utils.js"></script>
-    <script type="text/javascript" src="./app.js"></script>
-    <script type="text/javascript" src="./webgl-obj-loader.min.js"></script>
-    <!--
-    <script type="text/javascript" src="./cubeDefinition.js"></script>
-    -->
-    <script>
+   <div id="legend" style="position: absolute; z-index: 1; left: 20px; top: 50px; width:300px; height:325px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto; text-align:center">
+        <p style="font-family: Helvetica; font-size:larger">
+          <b> Light Manipulation</b>     
+          <ul style="font-family: Helvetica; font-size:larger">
+            Direction &alpha;<br>
+            <div class="slidecontainer"> <input type="range" min="0" max="180" step="1" value="60" id="dirAlpha"></div> </br>
+            Direction &beta;<br>
+            <div class="slidecontainer"> <input type="range" min="-180" max="180" step="1" value="100" id="dirBeta"></div> </br>
+            Change Light Color  <br> 
+            <input type="color" id="lightcol" value="#ffffff" onchange="onLightColorChange(this.value)"> <br> </br>
+            Specular Color <br>
+            <input type="color" id="lightcol" value="#ffffff" onchange="onSpecColorChange(this.value)"> <br> </br>
+            Shiny &gamma; <br>
+            <div class="slidecontainer"> <input type="range" min="10" max="100" id="specShine" value="24" onchange="onSpecShineChange(this.value)"></div> </br>
+          </ul>
+        </p>
+      </div> 
+     
+      <button style="position: absolute; z-index: 1; right: 20px; bottom: 270px; height:50px; width:100px" onclick="myFunction()">Show/Hide InfoBox</button>
+
+      <div id="infoBox" style="font-family: Helvetica; position: absolute; z-index: 1; right: 20px; bottom: 50px; width:350px; height:195px; background-color: white; border-style: dotted; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto; font-size: large">
+         Carbon (from Latin: carbo "coal") is a chemical element with the symbol C and atomic number 6. It is the second most abundant element in the human body by mass (about 18.5%) after oxygen. Carbon forms a vast number of compounds, more than any other element, with almost ten million compounds described to date, and yet that number is but a fraction of the number of theoretically possible compounds under standard conditions. For this reason, carbon has often been referred to as the "king of the elements"
+      </div>
+
+      <div id="legend" style="position: absolute; z-index: 1; left: 20px; bottom: 50px; width:350px; height:205px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto">
+        <p style="font-family: Helvetica; font-size:larger">
+          <b>Controls</b>     
+          <ul style="font-family: Helvetica; font-size:larger;">
+            <li>Left Click & Drag: move the camera around</li>
+            <li>Double Click: reset camera position</li>
+            <li>Scroll Up/Down: Zoom Out/In the camera</li>
+            <li>Spacebar: quickly switch from internal/external view</li>
+          </ul>
+        </p>
+      </div>  
   
-      function HEX2RGB(hex) {
+
+  <!-- ADDITIONAL SCRIPTS -->
+  <script>
+    function HEX2RGB(hex) {
         "use strict";
         if (hex.charAt(0) === '#') {
-          hex = hex.substr(1);
+            hex = hex.substr(1);
         }
         if ((hex.length < 2) || (hex.length > 6)) {
-          return false;
+            return false;
         }
         var values = hex.split(''),
-          r,
-          g,
-          b;
-  
+            r,
+            g,
+            b;
+
         if (hex.length === 2) {
-          r = parseInt(values[0].toString() + values[1].toString(), 16);
-          g = r;
-          b = r;
+            r = parseInt(values[0].toString() + values[1].toString(), 16);
+            g = r;
+            b = r;
         } else if (hex.length === 3) {
-          r = parseInt(values[0].toString() + values[0].toString(), 16);
-          g = parseInt(values[1].toString() + values[1].toString(), 16);
-          b = parseInt(values[2].toString() + values[2].toString(), 16);
+            r = parseInt(values[0].toString() + values[0].toString(), 16);
+            g = parseInt(values[1].toString() + values[1].toString(), 16);
+            b = parseInt(values[2].toString() + values[2].toString(), 16);
         } else if (hex.length === 6) {
-          r = parseInt(values[0].toString() + values[1].toString(), 16);
-          g = parseInt(values[2].toString() + values[3].toString(), 16);
-          b = parseInt(values[4].toString() + values[5].toString(), 16);
+            r = parseInt(values[0].toString() + values[1].toString(), 16);
+            g = parseInt(values[2].toString() + values[3].toString(), 16);
+            b = parseInt(values[4].toString() + values[5].toString(), 16);
         } else {
-          return false;
+            return false;
         }
         return [r, g, b];
-      }
-      function onSoundBoxChange(e) {
-        var audio = document.getElementById('audioPirate');
-        if (e.checked) {
-          audio.src = "Assets/whack2.mp3";
-          audio.loop = true;
-          audio.play();
-        }
-        else {
-          audio.src = "";
-          audio.play();
-        }
-        e.blur();
-      }
-  
-      before = 0.0;
-      requestAnimationFrame(
-        function loop() {
-          now = Date.now();
-          fps = Math.round(1000 / (now - before));
-          before = now;
-          requestAnimationFrame(loop);
-          if (nFrame % 10 == 0) { document.getElementById("FPS").innerHTML = fps; }
-        });
-  
-  
-      function pageLoader() {
-        if (pageReady) {
-          document.getElementById("t").style.visibility = "visible";
-          document.getElementById("legend").style.visibility = "visible";
-          document.getElementById("Loading").style.visibility = "hidden";
+    }
+
+      function myFunction() {
+        var x = document.getElementById("infoBox");
+        if (x.style.display === "none") {
+          x.style.display = "block";  
+        } else {
+          x.style.display = "none";
         }
       }
-    </script>
-  
-  </head>
-  
-  <body>
-  
-    <div id="Loading" hidden>
-      <h1> Loading Game... </h1>
-    </div>
-  
-  
-  
-    <table id="t" style="width: 100%; height:100%; visibility: hidden;">
-      <tr>
-        <td id="q" style="width: 80%;">
-          <canvas id="c" style="width:100%; height:100%; background-color: grey; ">
-  
-            Your browser does not support the HTML5 canvas element.
-          </canvas>
-          <div id="Lost" style="visibility: hidden;">
-            <h1> You Lost! </h1>
-            <input type="button" onclick="window.location.reload()" value="Play again"></input>
-          </div>
-        </td>
-  
-  
-  
-        <div id="legend"
-          style="position: absolute; z-index: 1; left: 40px; top: 50px; width:300px; height:200px; background-color: white; border-style: dashed; border-color: darkblue; opacity: 0.7; padding: 5px 10px 5px 10px; overflow:auto; visibility: hidden;">
-          <p style="font-family: Courier New">
-            <b>INFO</b>
-  
-          <p>FPS: <b id="FPS" style="color: red;"></b></p>
-          <b>Move Forward:</b> <b style="color: green;"> ARROW KEY UP</b>
-          <br>
-          <b>Move Backward:</b> <b style="color: green;">ARROW KEY DOWN</b>
-          <br>
-          <b>Move Right:</b> <b style="color: green;">ARROW KEY RIGHT</b>
-          <br>
-          <b>Move Left:</b> <b style="color: green;">ARROW KEY LEFT</b>
-          <br>
-          <b>Camera Up:</b> <b style="color: darkslategray;">W</b>
-          <br>
-          <b>Camera Down:</b> <b style="color: darkslategrey;">S</b>
-  
-  
-  
-          </p>
-        </div>
-  
-  
-        <td
-          style="background-color: white; font-family: 'Courier New', Courier, monospace; padding: 5px; height: 100%; width: 20%; margin-left: 80%;">
-          <p>
-          <h2> <b>Control Panel</b> </h2>
-          </p>
-  
-          <b>Ambient Light Color</b>
-          <div id="color1">
-            <input type="color" id="favcolor" name="favcolor" value="#FFFFFF" onclick="this.blur()"
-              oninput="onColorChange(this.value, 'ambient')">
-            <br>
-          </div>
-          <br>
-          <b>Boat material color</b>
-          <div id="color2">
-            <input type="color" id="favcolor" name="favcolor" value="#FFFFFF" onclick="this.blur()"
-              oninput="onColorChange(this.value, 'material')">
-            <br>
-          </div>
-          <p></p>
-          <b>Directional Light Color</b>
-          <div id="color3">
-            <input type="color" id="favcolor" name="favcolor" value="#FFFFFF" onclick="this.blur()"
-              oninput="onColorChange(this.value, 'directional')">
-            <br>
-          </div>
-          <p></p>
-          </p><b> dirLightAlpha </b></p>
-          <div id="slider1"> 0
-            <input id="slide1" type="range" min="0" max="360" step="1.0" value="322.0" onclick="this.blur()"
-              oninput="dirLightChange(this.value,'alpha');" />
-            360 <br />
-          </div>
-          <p><b> dirLightBeta </b></p>
-          <div id="slider2"> 0
-            <input id="slide2" type="range" min="0" max="360" step="1.0" value="91.0" onclick="this.blur()"
-              oninput="dirLightChange(this.value,'beta');" />
-            360 <br />
-          </div>
-          <p></p>
-          <b>Specular Light Color</b>
-          <div id="color4">
-            <input type="color" id="favcolor" name="favcolor" value="#FFFFFF" onclick="this.blur()"
-              oninput="onColorChange(this.value, 'specular')">
-            <br>
-          </div>
-          <p></p>
-          </p><b> Specular shining </b></p>
-          <div id="slider3"> 0
-            <input id="slide1" type="range" min="0.0" max="1000.0" step="1.0" value="100.0" onclick="this.blur()"
-              oninput="onSpecShineChange(this.value);" />
-            1000 <br />
-          </div>
-  
-          <p></p>
-  
-          <b> Enable sound </b><br>
-          <input type="checkbox" id="chbx" onchange="onSoundBoxChange(this);" /> Sound ON<br />
-  
-  
-          <audio id="audioPirate"></audio>
-  
-        </td>
-      </tr>
-    </table>
-  
-  
-  
-  
-  </body>
-  
-  
-  
-  </html>
+
+      function onLightColorChange(value){
+        let result = HEX2RGB(value);
+        var r = result[0]/255.0;
+        var g = result[1]/255.0;
+        var b = result[2]/255.0;
+        dirLightColor = [r,g,b];
+      }
+
+      function onSpecShineChange(value){
+        specShine = value;
+      }
+
+      function onSpecColorChange(value){
+      	let result = HEX2RGB(value);
+        var r = result[0]/255.0;
+        var g = result[1]/255.0;
+        var b = result[2]/255.0;
+        specularColor = [r,g,b];
+      }
+
+   </script>
+
+</body>
+
+</html>
