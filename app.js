@@ -146,7 +146,7 @@ var cabinet = new Item(0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, cabinetStr, objsTextur
 
 var moles = [];// we create an array of moles
 
-// we have an oceanx3 that will be drawn in run time simulating an "infinite" ocean space 
+// we have 5 equal moles
 moles[0] = new Item(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, moleStr, objsTexture);
 moles[1] = new Item(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, moleStr, objsTexture);
 moles[2] = new Item(0.0, 0.0, 2.0, 0.0, 0.0, 0.0, 1.0, moleStr, objsTexture);
@@ -156,7 +156,7 @@ moles[4] = new Item(0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 1.0, moleStr, objsTexture);
 var hammer = new Item(0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 1.0, hammerStr, objsTexture);
 
 function main() {
-
+  
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
   gl.clearColor(0.85, 0.85, 0.85, 1.0);
@@ -196,7 +196,7 @@ function main() {
   camElev = 15.0;
   camAngle = 0.0;
 
-  viewMatrix = utils.MakeView(cx + cabinet.x, cy + 1, 2 + cabinet.z, camElev, 0);
+  viewMatrix = utils.MakeView(cx, cy, cz, camElev, camAngle);
   // Here we prepare the buffers, set them, enable them
   setBuffers();
   // We are ready to draw the scene
@@ -265,6 +265,7 @@ async function init() {
 }
 
 /* With this function we retrieve the attributes and uniforms from the shaders in order to se them */
+
 function getShadersPos() {
   // the one with the element number array 0 referring to the program0 that's used for almost all the elements
   positionAttributeLocation[0] = gl.getAttribLocation(program0, "a_position");
@@ -447,7 +448,7 @@ function animate(item) {
   }
   
   // By changing the viewMatrix we are moving the camera along with the boat translation
-  viewMatrix = utils.MakeView(cx + item.x, cy + 1, 2 + item.z, camElev, 0);
+  viewMatrix = utils.MakeView(cx , cy , cz, camElev, camAngle);
 
 
   // We update the worldMatrix of objects since some parameter has changed
