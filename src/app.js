@@ -35,6 +35,12 @@ function initializeVariables(){
     indices: hammerModel.indices,
     texcoord: hammerModel.textures,
   }
+  platformBuffer = {
+    positions: platformModel.vertices,
+    normals: platformModel.vertexNormals,
+    indices: platformModel.indices,
+    texcoord: null,
+  }
   //---------------------------------------------------------------------------------------
 
   //directional light definition
@@ -51,6 +57,7 @@ function initializeVariables(){
   specularColor = [1.0, 1.0, 1.0];
   specShine = 24;
 
+  platformColor = [0.5, 0.5, 0.5];
   //initializing non-textured object diffuse color (used instead of this)
   cabinetColor = [1.0, 1.0, 1.0];
   moleColor = [0.8, 0.8, 0.8];
@@ -107,11 +114,11 @@ function bindingBuffers(vao,objBuffer){
   gl.vertexAttribPointer(normalAttributeLocation, 3, gl.FLOAT, false, 0, 0);
 
   if(objBuffer.texcoord != null){
-  uvBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(objBuffer.texcoord), gl.STATIC_DRAW);
-  gl.enableVertexAttribArray(uvAttributeLocation);
-  gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
+    uvBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, uvBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(objBuffer.texcoord), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(uvAttributeLocation);
+    gl.vertexAttribPointer(uvAttributeLocation, 2, gl.FLOAT, false, 0, 0);
   }
 
   indexBuffer = gl.createBuffer();
@@ -227,9 +234,14 @@ function drawScene() {
     gl.uniform3fv(specColorHandle, specularColor);
     //------------------------------------------------------------------
 
-    gl.uniform1i(hasTexture, 1);
-    gl.activeTexture(gl.TEXTURE0);
-    gl.uniform1i(textLocation, texture);
+    if(object.drawInfo.buffer.texcoord != null){
+      gl.uniform1i(hasTexture, 1);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.uniform1i(textLocation, texture);
+    }else{
+      gl.uniform1i(hasTexture, 0);
+      gl.uniform3fv(materialDiffColorHandle, object.drawInfo.materialColor);
+    }
 
     gl.drawElements(gl.TRIANGLES, object.drawInfo.buffer.indices.length, gl.UNSIGNED_SHORT, 0);
 
@@ -278,17 +290,18 @@ await utils.loadFiles([shaderDir + 'vs.glsl', shaderDir + 'fs.glsl'], function (
 gl.useProgram(program);
 
 //###################################################################################
-//This loads the obj model in the cabinetModel variable
+//This loads the objs model in the Models variable
 var cabinetObjStr = await utils.get_objstr(baseDir + cabinetStr);
 cabinetModel = new OBJ.Mesh(cabinetObjStr);
 
-//This loads the obj model in the moleModel variable
 var moleObjStr = await utils.get_objstr(baseDir + moleStr);
 moleModel = new OBJ.Mesh(moleObjStr);
 
-//This loads the obj model in the hammerModel variable
 var hammerObjStr = await utils.get_objstr(baseDir + hammerStr);
 hammerModel = new OBJ.Mesh(hammerObjStr);
+
+var platformObjStr = await utils.get_objstr(baseDir + platformStr);
+platformModel = new OBJ.Mesh(platformObjStr);
 //###################################################################################
 
 main();

@@ -588,7 +588,16 @@ var utils={
 	
 			return out; 
 		},
+		
+		MakeScaleNuMatrix: function(sx, sy, sz) {
+		// Create a scale matrix for a scale of ({sx}, {sy}, {sz}).
 	
+			var out = this.identityMatrix();
+			out[0]  = sx;
+			out[5]  = sy;
+			out[10] = sz;
+			return out; 
+		},
 	
 	//***Projection Matrix operations
 		MakeWorld: function(tx, ty, tz, rx, ry, rz, s){

@@ -27,13 +27,13 @@ var specShine;
 var objects = []; //scene graph objects array
 var cabinetNode;
 var hammerNode;
-//6 moles
+var platfromNode;
+//5 moles
 var moleNode1;
 var moleNode2;
 var moleNode3;
 var moleNode4;
 var moleNode5;
-var moleNode6;
 
 //buffer for each object, which contains position, indices, texture etc.
 var cabinetBuffer;
@@ -80,6 +80,7 @@ var normalMatrix;
 var vao1;
 var vao2;
 var vao3;
+var vao4;
 var positionBuffer;
 var normalBuffer;
 var uvBuffer;

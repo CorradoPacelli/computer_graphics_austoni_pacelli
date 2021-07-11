@@ -2,6 +2,7 @@
 var cabinetStr = 'Assets/cabinet.obj';
 var moleStr = 'Assets/mole.obj';
 var hammerStr = 'Assets/hammer.obj';
+var platformStr = 'Assets/platform.obj';
 /* Set of location addresses for the objects' textures */
 var objsTexture = 'Assets/Mole.png';
 
@@ -9,7 +10,7 @@ var objsTexture = 'Assets/Mole.png';
 function sceneGraph(){
 
       cabinetNode = new Node();
-      cabinetNode.localMatrix = utils.multiplyMatrices(utils.identityMatrix(), utils.MakeTranslateMatrix(0.5,-0.5,0.0));
+      cabinetNode.localMatrix = utils.MakeTranslateMatrix(0.0,0.0,0.0);
       cabinetNode.drawInfo = {
         buffer: cabinetBuffer,
         vao: vao1,
@@ -22,11 +23,19 @@ function sceneGraph(){
         vao: vao2,
       };
 
+      platformNode = new Node();
+      platformNode.localMatrix = utils.multiplyMatrices(utils.MakeScaleNuMatrix(10,0.5,10),utils.MakeTranslateMatrix(-2,-4,2));
+      platformNode.drawInfo = {
+        buffer: platformBuffer,
+        vao: vao3,
+        materialColor: platformColor,
+      };
+
       moleNode1 = new Node();
       moleNode1.localMatrix = utils.MakeTranslateMatrix(2,1,0);
       moleNode1.drawInfo = {
         buffer: moleBuffer,
-        vao: vao3,
+        vao: vao4,
       };
 
       moleNode2 = new Node();
@@ -45,27 +54,23 @@ function sceneGraph(){
       moleNode5 = Object.assign(moleNode5, moleNode1);
       moleNode5.localMatrix = utils.MakeTranslateMatrix(3,2,0);
 
-      moleNode6 = new Node();
-      moleNode6 = Object.assign(moleNode6, moleNode1);
-      moleNode6.localMatrix = utils.MakeTranslateMatrix(3,3,0);
-
       hammerNode.setParent(cabinetNode);
+      platformNode.setParent(cabinetNode);
       moleNode1.setParent(cabinetNode);
       moleNode2.setParent(cabinetNode);
       moleNode3.setParent(cabinetNode);
       moleNode4.setParent(cabinetNode);
       moleNode5.setParent(cabinetNode);
-      moleNode6.setParent(cabinetNode);
 
       objects = [
         cabinetNode,
         hammerNode,
+        platformNode,
         moleNode1,
         moleNode2,
         moleNode3,
         moleNode4,
         moleNode5,
-        moleNode6,
       ];
 }
 

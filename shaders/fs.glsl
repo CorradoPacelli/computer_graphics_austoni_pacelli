@@ -23,41 +23,37 @@ by considering the x, y, z components of the normal vector separately. This howe
 vectors that are no longer unitary. For this reason normal vectors should be normalized at every step to restore their 
 unitary size */
 
-
 void main() {
 
-vec3 nNormal = normalize(fsNormal);
-vec3 eyeDirection = fsPos; //observer direction obtained by normalizing the object position (Camera space)
+    vec3 nNormal = normalize(fsNormal);
+    vec3 eyeDirection = fsPos; //observer direction obtained by normalizing the object position (Camera space)
 
+    if(hasTexture == 1){  //object has texture
 
-if(hasTexture == 1){  //object has texture
+        vec4 texcol = texture(u_texture, uvFS);
 
+        // LAMBERT DIFFUSE 
+        vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * texcol.rgb;
+        //vec3 diffuseTerm = texcol.rgb*diffContr; 
 
-vec4 texcol = texture(u_texture, uvFS);
+        // PHONG SPECULAR
+        vec3 reflectDir = -reflect(lightDirection, nNormal);
+        vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
+        outColor = vec4(clamp(diffuseTerm + specularTerm, 0.0, 1.0),1.0);
 
-// LAMBERT DIFFUSE 
-vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * texcol.rgb;
-//vec3 diffuseTerm = texcol.rgb*diffContr; 
+    }
 
+    else{   //object does not have texture
 
-// PHONG SPECULAR
-vec3 reflectDir = -reflect(lightDirection, nNormal);
-vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
-outColor = vec4(clamp(diffuseTerm + specularTerm, 0.0, 1.0),1.0);
+        // LAMBERT DIFFUSE 
+        vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * mDiffColor;
+        //vec3 diffuseTerm = mDiffColor*diffContr; 
 
-}
+        // PHONG SPECULAR
+        vec3 reflectDir = -reflect(lightDirection, nNormal);
+        vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
 
-else{   //object does not have texture
-
-// LAMBERT DIFFUSE 
-vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * mDiffColor;
-//vec3 diffuseTerm = mDiffColor*diffContr; 
-
-// PHONG SPECULAR
-vec3 reflectDir = -reflect(lightDirection, nNormal);
-vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
-
-outColor = vec4(clamp(diffuseTerm + specularTerm, 0.0, 1.0),1.0);
-}
+        outColor = vec4(clamp(diffuseTerm + specularTerm, 0.0, 1.0),1.0);
+    }
 
 }
