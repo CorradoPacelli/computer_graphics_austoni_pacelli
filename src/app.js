@@ -8,8 +8,9 @@ function initializeVariables(){
   delta = 1.0;
   lookRadius = 5;
   ConeIn=0.3;
-  ConeOut=100;
-
+  ConeOut=100;        
+  Rho=1;                    
+  
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -55,6 +56,11 @@ function initializeVariables(){
         -Math.sin(dirLightAlpha),
         -Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
+  
+  //set light position to pass to the shader for the spot light (that uses the light position like in the point light)
+  lightPosition[0] = Rho*Math.sin(dirLightBeta)*Math.cos(dirLightAlpha);
+  lightPosition[1] = Rho*Math.sin(dirLightBeta)*Math.sin(dirLightAlpha);
+  lightPosition[2] = Rho*Math.cos(dirLightBeta);
 
   dirLightColor = [1.0, 1.0, 1.0]; //initially white Color
   specularColor = [1.0, 1.0, 1.0];
@@ -81,7 +87,8 @@ function initializeVariables(){
   specShineHandle = gl.getUniformLocation(program, 'specShine');
   ConeInHandle = gl.getUniformLocation(program, 'ConeSpotIn');
   ConeOutHandle = gl.getUniformLocation(program, 'ConeSpotOut');
-
+  LightPosHandle = gl.getUniformLocation(program, 'LightPos');
+  
   viewMatrix = utils.MakeView(cx, cy, cz, elevation, -angle);
   
   //LOAD TEXTURE
@@ -192,6 +199,9 @@ function updateLight(){
         -Math.sin(dirLightAlpha),
         -Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
+  lightPosition[0] = Rho*Math.sin(dirLightBeta)*Math.cos(dirLightAlpha);
+  lightPosition[1] = Rho*Math.sin(dirLightBeta)*Math.sin(dirLightAlpha);
+  lightPosition[2] = Rho*Math.cos(dirLightBeta);
 }
 
 var internalCam = false;
@@ -243,6 +253,7 @@ function drawScene() {
     gl.uniform3fv(specColorHandle, specularColor);
     gl.uniform1f(ConeInHandle, ConeIn);
     gl.uniform1f(ConeOutHandle, ConeOut);
+    gl.uniform3fv(LightPosHandle,lightPosition);
     //------------------------------------------------------------------
 
     if(object.drawInfo.buffer.texcoord != null){

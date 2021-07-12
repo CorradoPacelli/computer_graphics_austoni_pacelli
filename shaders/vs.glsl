@@ -13,8 +13,7 @@ out vec3 direzione;
 uniform mat4 matrix;
 uniform mat4 nMatrix;     //matrix to transform normals
 uniform mat4 worldViewMatrix;
-uniform vec3 lightDirection;
-uniform vec3 lightPos;
+uniform vec3 LightPos;
 
 void main() {
 
@@ -27,7 +26,7 @@ void main() {
   //-----------------------------------------
 
 //output varyings to pass to the fragment shaders
-  direzione = normalize(lightDirection - a_position);                 //change this with lightPos
+  direzione = normalize(LightPos - a_position);                 //change this with lightPos
 
   /* The Phong shading method is much more expensive than the 
 	Gouraud method because it requires the solution of the 

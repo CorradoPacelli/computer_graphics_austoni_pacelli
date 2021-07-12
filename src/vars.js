@@ -47,7 +47,9 @@ var directionalLight;
 var dirLightColor;
 var specularColor;
 var ConeIn
-var ConeOut
+var ConeOut					//outer cone
+var lightPosition = [];       //position of the spot light
+var Rho;							//distance from light to point (object)
 
 //object colors
 var cabinetColor;
