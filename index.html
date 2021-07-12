@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+	<head>
+	<link rel="icon" href="model/favicon.png" type="image/x-icon">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Whack a Mole by Austoni & Pacelli</title>
+        <script type="text/javascript" src="./src/vars.js"></script>
+        <script type="text/javascript" src="./src/webgl-obj-loader.min.js"></script>
+        <script type="text/javascript" src="./src/utils.js"></script>
+        <script type="text/javascript" src="./src/console.js"></script>
+        <script type="text/javascript" src="./src/app.js"></script>
+	
+	<body style="background-color: grey; font-family: verdana" onLoad="init()">
+		<canvas id="c" style="background-color: #ADECE9;">
+			Your browser doesn't support the Canvas Element!
+		</canvas>
+		
+		<div align='right' style="position:absolute; right: 50px; top: 5px; width:auto; height:auto; padding: 10px 15px 15px 10px;">
+			<h2><b>GAME COUNTERS</b></h2>
+			<div style="position:relative; top:-20px">
+				<h4 style="display:inline; float:left">REMAINING TIME:</h4>
+				<h4 id="remTime" style="display:inline; float:right">30.0 s</h4>
+			</div>
+			<div style="position:relative; top:-50px">
+				<h4 style="display:inline; float:left">MOLE HIT COUNT:&emsp;&emsp;&emsp;&emsp;&emsp;</h4>
+				<h4 id="moleHit" style="display:inline; float:right">0</h4>
+			</div>
+		</div>
+
+		<div id="panel" style="position:absolute; text-align: center; right: 50px; top: 400px; width:auto; height:auto; overflow:auto;">
+			<p></p><h2> LIGHT PANEL </h2><p></p>
+			<div>
+				<b> ADJUST LIGHT DIR </b>
+				<br>
+				<input type="range" min="0" max="180" step="1" value="45" id="dirAlpha"> Light Dir Alpha
+				<br>
+				<input type="range" min="0" max="360" step="1" value="45" id="dirBeta"> Light Dir Beta
+				<br>
+				<input type="range" min="0" max="1" step="0.01" value="45" id="ConeLightIn"> Cone In      <!-- ConeIn is expressed in % with respect to the cone out, for this reason the slider varies from 0 to 100 -->
+				<br>
+				<input type="range" min="0" max="180" step="1" value="45" id="ConeLightOut"> Cone Out
+				<br>
+			</div>
+			<br>
+			<div>
+				<b> ADJUST LIGHT COLOR </b>
+				<br>
+				<input type="color" id="lightcol" value="#ffe41a" onchange="onLightColorChange(this.value)">
+			</div>
+			<br>
+			<div>
+				<b> ADJUST SPECULAR LIGHT</b>
+				<br>
+				<input type="color" id="lightcol" value="#ffffff" onchange="onSpecColorChange(this.value)">
+			</div>
+		</div>
+		
+		<div id="game" style="position:absolute; text-align: center; right: 50px; top: 180px; width:auto; height:auto; overflow:auto;">
+			<p></p><h2> GAME MODE </h2><p></p>
+			<div>
+				<br>
+				<b> SELECT GAME MODE:&emsp;&emsp; </b>
+            	<select id="drop-down" name="GameMode" onchange="onDropdownChange(this.value);">
+                	<option value="1" selected>EASY</option>
+               		<option value="2">HARD</option>
+                	<option value="3">EXTREME</option>
+            	</select>
+				<br>
+				<br>
+				<b> SOUND:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; </b>
+				<input type="checkbox" id="chbx" onclick="onCheckBoxChange(this.checked);"/> On/Off<br/>
+				<br>
+			</div>
+		</div>
+		
+		<center>
+			<h3>Use the following keys</h3>
+			<table border="1">
+			  <tr>
+				<td><center>CamX</td>
+				<td><center>CamY</td>
+				<td><center>CamZ</td>
+				<td><center>Elevation</td>
+				<td><center>Angle</td>
+				<td><center>Hit Mole</td>
+			  <tr>
+				<td><center>Click/Move Mouse Left</td>
+				<td><center>Scroll Up</td>
+				<td><center>Click/Move Mouse Up</td>
+				<td><center>A (+)</td>
+				<td><center>R (cw)</td>
+				<td><center>Mouse Click</td>
+			  <tr>
+				<td><center>Click/Move Mouse Right</td>
+				<td><center>Scroll Down</td>
+				<td><center>Click/Move Mouse Down</td>
+				<td><center>D (-)</td>
+				<td><center>F (ccw)</td>
+				<td><center></td>
+			  </tr>
+			<table/>
+			
+			
+			
+	</body>
+	<!--
+	<audio id="missileLaunch" src="audio/missileLaunch.mp3"></audio>
+	<audio id="missileEnded" src="audio/missileBoom.mp3"></audio>
+	-->
+	<script>
+    function HEX2RGB(hex) {
+        "use strict";
+        if (hex.charAt(0) === '#') {
+            hex = hex.substr(1);
+        }
+        if ((hex.length < 2) || (hex.length > 6)) {
+            return false;
+        }
+        var values = hex.split(''),
+            r,
+            g,
+            b;
+
+        if (hex.length === 2) {
+            r = parseInt(values[0].toString() + values[1].toString(), 16);
+            g = r;
+            b = r;
+        } else if (hex.length === 3) {
+            r = parseInt(values[0].toString() + values[0].toString(), 16);
+            g = parseInt(values[1].toString() + values[1].toString(), 16);
+            b = parseInt(values[2].toString() + values[2].toString(), 16);
+        } else if (hex.length === 6) {
+            r = parseInt(values[0].toString() + values[1].toString(), 16);
+            g = parseInt(values[2].toString() + values[3].toString(), 16);
+            b = parseInt(values[4].toString() + values[5].toString(), 16);
+        } else {
+            return false;
+        }
+        return [r, g, b];
+    }
+    
+	  function onLightColorChange(value){
+        let result = HEX2RGB(value);
+        var r = result[0]/255.0;
+        var g = result[1]/255.0;
+        var b = result[2]/255.0;
+        dirLightColor = [r,g,b];
+      }
+
+      function onSpecShineChange(value){
+        specShine = value;
+      }
+
+      function onSpecColorChange(value){
+      	let result = HEX2RGB(value);
+        var r = result[0]/255.0;
+        var g = result[1]/255.0;
+        var b = result[2]/255.0;
+        specularColor = [r,g,b];
+      }
+
+   </script>
+
+</html>

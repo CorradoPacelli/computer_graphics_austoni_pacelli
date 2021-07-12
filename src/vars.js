@@ -46,6 +46,8 @@ var dirLightBeta;
 var directionalLight;
 var dirLightColor;
 var specularColor;
+var ConeIn
+var ConeOut
 
 //object colors
 var cabinetColor;

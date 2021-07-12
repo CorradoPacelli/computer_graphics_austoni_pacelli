@@ -5,16 +5,19 @@ precision highp float;
 in vec3 fsNormal;
 in vec2 uvFS;
 in vec3 fsPos;  
+in vec3 direzione;
 
 out vec4 outColor;
 
 uniform sampler2D u_texture;
 uniform vec3 mDiffColor;
 uniform vec3 lightDirection;
-uniform vec3 lightColor;
+uniform vec3 OlightColor;
 uniform int hasTexture;
 uniform float specShine;
 uniform vec3 specularColor;
+uniform float ConeSpotIn;
+uniform float ConeSpotOut;
 
 /* The Phong shading algorithm computes the color of each pixel separately. This is thus a per-pixel 
 shading algorithm. In this case, vertex normal vectors are interpolated to approximate the 
@@ -31,6 +34,14 @@ void main() {
     if(hasTexture == 1){  //object has texture
 
         vec4 texcol = texture(u_texture, uvFS);
+        
+        //SPOT LIGHT
+        float alpha = dot(direzione , lightDirection);
+        float Cout = cos(radians(ConeSpotOut/2.0));
+        float Cn = ConeSpotOut * ConeSpotIn;
+        float Cin = cos(radians(Cn/2.0));
+        float spot = clamp((alpha-Cout)/(Cin-Cout),0.0,1.0);
+        vec3 lightColor = OlightColor * spot;
 
         // LAMBERT DIFFUSE 
         vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * texcol.rgb;
@@ -44,7 +55,15 @@ void main() {
     }
 
     else{   //object does not have texture
-
+        
+        //SPOT LIGHT
+        float alpha = dot(direzione , lightDirection);
+        float Cout = cos(radians(ConeSpotOut/2.0));
+        float Cn = ConeSpotOut * ConeSpotIn;
+        float Cin = cos(radians(Cn/2.0));
+        float spot = clamp((alpha-Cout)/(Cin-Cout),0.0,1.0);
+        vec3 lightColor = OlightColor * spot;
+        
         // LAMBERT DIFFUSE 
         vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * mDiffColor;
         //vec3 diffuseTerm = mDiffColor*diffContr; 

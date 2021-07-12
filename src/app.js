@@ -7,6 +7,8 @@ function initializeVariables(){
   angle = 0.01;
   delta = 1.0;
   lookRadius = 5;
+  ConeIn=0.3;
+  ConeOut=100;
 
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -43,9 +45,10 @@ function initializeVariables(){
   }
   //---------------------------------------------------------------------------------------
 
-  //directional light definition
+  //directional light definition and cone definition
   dirLightAlpha = -utils.degToRad(60);
   dirLightBeta  = -utils.degToRad(100);
+
 
 
   directionalLight = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
@@ -72,10 +75,12 @@ function initializeVariables(){
   lightDirectionHandle = gl.getUniformLocation(program, 'lightDirection');
   normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');
   hasTexture = gl.getUniformLocation(program, 'hasTexture');
-  dirLightColorHandle = gl.getUniformLocation(program, 'lightColor');
+  dirLightColorHandle = gl.getUniformLocation(program, 'OlightColor');
   specColorHandle = gl.getUniformLocation(program, 'specularColor');
   worldViewMatrixLocation = gl.getUniformLocation(program, 'worldViewMatrix');
   specShineHandle = gl.getUniformLocation(program, 'specShine');
+  ConeInHandle = gl.getUniformLocation(program, 'ConeSpotIn');
+  ConeOutHandle = gl.getUniformLocation(program, 'ConeSpotOut');
 
   viewMatrix = utils.MakeView(cx, cy, cz, elevation, -angle);
   
@@ -178,7 +183,11 @@ function updateLight(){
 //to properly render new values when slider changes
   dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
   dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
-
+  ConeIn =  document.getElementById("ConeLightIn").value;
+  ConeOut = document.getElementById("ConeLightOut").value;
+  console.log(ConeIn);
+  console.log(ConeOut);
+  
   directionalLight = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
         -Math.sin(dirLightAlpha),
         -Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
@@ -232,6 +241,8 @@ function drawScene() {
     gl.uniform3fv(lightDirectionHandle,  lightDirectionTransformed);
     gl.uniform1f(specShineHandle, specShine);
     gl.uniform3fv(specColorHandle, specularColor);
+    gl.uniform1f(ConeInHandle, ConeIn);
+    gl.uniform1f(ConeOutHandle, ConeOut);
     //------------------------------------------------------------------
 
     if(object.drawInfo.buffer.texcoord != null){
