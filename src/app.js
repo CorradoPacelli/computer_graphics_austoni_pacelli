@@ -192,8 +192,8 @@ function updateLight(){
   dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
   ConeIn =  document.getElementById("ConeLightIn").value;
   ConeOut = document.getElementById("ConeLightOut").value;
-  console.log(ConeIn);
-  console.log(ConeOut);
+  //console.log(ConeIn);
+  //console.log(ConeOut);
   
   directionalLight = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
         -Math.sin(dirLightAlpha),
