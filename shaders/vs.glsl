@@ -26,7 +26,7 @@ void main() {
   //-----------------------------------------
 
 //output varyings to pass to the fragment shaders
-  direzione = normalize(LightPos - a_position);                 //change this with lightPos
+  direzione = normalize(LightPos - fsPos);                 //change this with lightPos
 
   /* The Phong shading method is much more expensive than the 
 	Gouraud method because it requires the solution of the 

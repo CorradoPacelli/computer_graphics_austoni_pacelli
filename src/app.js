@@ -9,7 +9,11 @@ function initializeVariables(){
   lookRadius = 5;
   ConeIn=0.3;
   ConeOut=100;        
-  Rho=1;                    
+  LPosx=0;
+  LPosy=5;
+  LPosz=0;
+  LDirTheta=60;
+  LDirPhi=45;                    
   
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -46,7 +50,7 @@ function initializeVariables(){
   }
   //---------------------------------------------------------------------------------------
 
-  //directional light definition and cone definition
+  //directional light definition
   dirLightAlpha = -utils.degToRad(60);
   dirLightBeta  = -utils.degToRad(100);
 
@@ -58,9 +62,19 @@ function initializeVariables(){
   ];
   
   //set light position to pass to the shader for the spot light (that uses the light position like in the point light)
-  lightPosition[0] = Rho*Math.sin(dirLightBeta)*Math.cos(dirLightAlpha);
-  lightPosition[1] = Rho*Math.sin(dirLightBeta)*Math.sin(dirLightAlpha);
-  lightPosition[2] = Rho*Math.cos(dirLightBeta);
+  //lightPosition[0] = Rho*Math.sin(dirLightBeta)*Math.cos(dirLightAlpha);
+  //lightPosition[1] = Rho*Math.sin(dirLightBeta)*Math.sin(dirLightAlpha);
+  //lightPosition[2] = Rho*Math.cos(dirLightBeta);
+  lightPosition = [LPosx, LPosy, LPosz];              
+  
+  
+  //find spot direction from spherical coordinates
+  Rho=Math.sqrt(Math.pow(LPosx,2)+Math.pow(LPosy,2)+Math.pow(LPosz,2));
+  spotX = Rho*Math.sin(LDirPhi)*Math.cos(LDirTheta);
+  spotY = Rho*Math.sin(LDirPhi)*Math.sin(LDirTheta);
+  spotZ = Rho*Math.cos(LDirPhi);
+  spotDir = [spotX, spotY, spotZ];              //to be normalized in the shader
+  //spotDir = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),-Math.sin(dirLightAlpha),-Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)];
 
   dirLightColor = [1.0, 1.0, 1.0]; //initially white Color
   specularColor = [1.0, 1.0, 1.0];
@@ -88,6 +102,7 @@ function initializeVariables(){
   ConeInHandle = gl.getUniformLocation(program, 'ConeSpotIn');
   ConeOutHandle = gl.getUniformLocation(program, 'ConeSpotOut');
   LightPosHandle = gl.getUniformLocation(program, 'LightPos');
+  SpotDirHandle = gl.getUniformLocation(program, 'SpotDirection');
   
   viewMatrix = utils.MakeView(cx, cy, cz, elevation, -angle);
   
@@ -170,7 +185,7 @@ function doMouseMove(event) {
 }
 
 function doMouseWheel(event) {
-  var nLookRadius = lookRadius + event.wheelDelta/300.0;
+  var nLookRadius = lookRadius + event.wheelDelta/300.0;          
   if((nLookRadius > 2.0) && (nLookRadius < 40.0)) {
     lookRadius = nLookRadius;
   }
@@ -187,11 +202,21 @@ function resetCamera(event){
 }
 
 function updateLight(){
-//to properly render new values when slider changes
-  dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
-  dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
+//to properly render new values when slider changes 
+  //dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
+  //dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
   ConeIn =  document.getElementById("ConeLightIn").value;
   ConeOut = document.getElementById("ConeLightOut").value;
+  LPosx = document.getElementById("Px").value;
+  LPosy = document.getElementById("Py").value;
+  LPosz = document.getElementById("Pz").value;
+  console.log(LPosx);
+  console.log(LPosy);
+  console.log(LPosz);
+
+  LDirPhi = -utils.degToRad(document.getElementById("Phi").value);
+  LDirTheta = -utils.degToRad(document.getElementById("Theta").value);
+  
   //console.log(ConeIn);
   //console.log(ConeOut);
   
@@ -199,9 +224,17 @@ function updateLight(){
         -Math.sin(dirLightAlpha),
         -Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
-  lightPosition[0] = Rho*Math.sin(dirLightBeta)*Math.cos(dirLightAlpha);
-  lightPosition[1] = Rho*Math.sin(dirLightBeta)*Math.sin(dirLightAlpha);
-  lightPosition[2] = Rho*Math.cos(dirLightBeta);
+  //lightPosition[0] = Rho*Math.sin(dirLightBeta)*Math.cos(dirLightAlpha);
+  //lightPosition[1] = Rho*Math.sin(dirLightBeta)*Math.sin(dirLightAlpha);
+  //lightPosition[2] = Rho*Math.cos(dirLightBeta);
+  lightPosition = [LPosx, LPosy, LPosz];
+  Rho=Math.sqrt(Math.pow(LPosx,2)+Math.pow(LPosy,2)+Math.pow(LPosz,2));
+  spotX = Rho*Math.sin(LDirPhi)*Math.cos(LDirTheta);
+  spotY = Rho*Math.sin(LDirPhi)*Math.sin(LDirTheta);
+  spotZ = Rho*Math.cos(LDirPhi);
+  spotDir = [0, 1, 0];  
+  console.log(spotDir);
+  //spotDir = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),-Math.sin(dirLightAlpha),-Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)];
 }
 
 var internalCam = false;
@@ -254,6 +287,7 @@ function drawScene() {
     gl.uniform1f(ConeInHandle, ConeIn);
     gl.uniform1f(ConeOutHandle, ConeOut);
     gl.uniform3fv(LightPosHandle,lightPosition);
+    gl.uniform3fv(SpotDirHandle,spotDir);
     //------------------------------------------------------------------
 
     if(object.drawInfo.buffer.texcoord != null){

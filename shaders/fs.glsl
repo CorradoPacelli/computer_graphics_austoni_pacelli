@@ -12,6 +12,7 @@ out vec4 outColor;
 uniform sampler2D u_texture;
 uniform vec3 mDiffColor;
 uniform vec3 lightDirection;
+uniform vec3 SpotDirection;
 uniform vec3 OlightColor;
 uniform int hasTexture;
 uniform float specShine;
@@ -27,7 +28,8 @@ vectors that are no longer unitary. For this reason normal vectors should be nor
 unitary size */
 
 void main() {
-
+    
+    vec3 SD = normalize(SpotDirection);
     vec3 nNormal = normalize(fsNormal);
     vec3 eyeDirection = fsPos; //observer direction obtained by normalizing the object position (Camera space)
 
@@ -36,7 +38,7 @@ void main() {
         vec4 texcol = texture(u_texture, uvFS);
         
         //SPOT LIGHT
-        float alpha = dot(direzione , lightDirection);
+        float alpha = dot(direzione , SD);
         float Cout = cos(radians(ConeSpotOut/2.0));
         float Cn = ConeSpotOut * ConeSpotIn;
         float Cin = cos(radians(Cn/2.0));
@@ -44,11 +46,11 @@ void main() {
         vec3 lightColor = OlightColor * spot;
 
         // LAMBERT DIFFUSE 
-        vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * texcol.rgb;
+        vec3 diffuseTerm = lightColor * clamp(dot(nNormal, direzione),0.0,1.0) * texcol.rgb;
         //vec3 diffuseTerm = texcol.rgb*diffContr; 
 
         // PHONG SPECULAR
-        vec3 reflectDir = -reflect(lightDirection, nNormal);
+        vec3 reflectDir = -reflect(direzione, nNormal);
         vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
         outColor = vec4(clamp(diffuseTerm + specularTerm, 0.0, 1.0),1.0);
 
@@ -57,7 +59,7 @@ void main() {
     else{   //object does not have texture
         
         //SPOT LIGHT
-        float alpha = dot(direzione , lightDirection);
+        float alpha = dot(direzione , SD);
         float Cout = cos(radians(ConeSpotOut/2.0));
         float Cn = ConeSpotOut * ConeSpotIn;
         float Cin = cos(radians(Cn/2.0));
@@ -65,11 +67,11 @@ void main() {
         vec3 lightColor = OlightColor * spot;
         
         // LAMBERT DIFFUSE 
-        vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * mDiffColor;
+        vec3 diffuseTerm = lightColor * clamp(dot(nNormal, direzione),0.0,1.0) * mDiffColor;
         //vec3 diffuseTerm = mDiffColor*diffContr; 
 
         // PHONG SPECULAR
-        vec3 reflectDir = -reflect(lightDirection, nNormal);
+        vec3 reflectDir = -reflect(direzione, nNormal);
         vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
 
         outColor = vec4(clamp(diffuseTerm + specularTerm, 0.0, 1.0),1.0);

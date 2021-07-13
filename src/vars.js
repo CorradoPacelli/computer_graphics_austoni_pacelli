@@ -21,6 +21,8 @@ var angle;
 var delta;
 var lookRadius;
 var specShine;
+var RotX;
+var RotY;
 
 
 //variables to extract obj model properties
@@ -46,10 +48,19 @@ var dirLightBeta;
 var directionalLight;
 var dirLightColor;
 var specularColor;
-var ConeIn
-var ConeOut					//outer cone
+var ConeIn;
+var ConeOut;					//outer cone
 var lightPosition = [];       //position of the spot light
 var Rho;							//distance from light to point (object)
+var LPosx;
+var LPosy;
+var LPosz;
+var LDirTheta;
+var LDirPhi;
+var spotDir=[];
+
+
+
 
 //object colors
 var cabinetColor;
