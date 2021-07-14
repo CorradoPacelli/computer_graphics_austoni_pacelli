@@ -42,6 +42,7 @@ function sceneGraph(){
       moleNode1.drawInfo = {
         buffer: moleBuffer,
         vao: vao4,
+        initialPosY: 0.65,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -54,6 +55,7 @@ function sceneGraph(){
       moleNode2.drawInfo = {
         buffer: moleBuffer,
         vao: vao5,
+        initialPosY: 0.65,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -65,6 +67,7 @@ function sceneGraph(){
       moleNode3.drawInfo = {
         buffer: moleBuffer,
         vao: vao6,
+        initialPosY: 0.65,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -76,6 +79,7 @@ function sceneGraph(){
       moleNode4.drawInfo = {
         buffer: moleBuffer,
         vao: vao7,
+        initialPosY: 0.6,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -87,6 +91,7 @@ function sceneGraph(){
       moleNode5.drawInfo = {
         buffer: moleBuffer,
         vao: vao8,
+        initialPosY: 0.6,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -147,7 +152,6 @@ function updateLocalMatrices(){
     
   }
 
-  
   moles.forEach(mole => {
     if(mole.drawInfo.moleStatus == "go up"){
       moleUp(mole);
@@ -164,7 +168,7 @@ function updateLocalMatrices(){
 
 function moleUp(moleNode){
   //[7] == y
-  if(moleNode.localMatrix[7] <= 1.15){
+  if(moleNode.localMatrix[7] <= moleNode.drawInfo.initialPosY + 0.49){
     moleNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0,0.1,0), moleNode.localMatrix);
   }else{
     moleNode.drawInfo.moleStatus = "pending";
@@ -188,7 +192,7 @@ function updatePending(moleNode){
 
 function moleDown(moleNode){
   //[7] == y
-  if(moleNode.localMatrix[7] >= 0.65){
+  if(moleNode.localMatrix[7] >= moleNode.drawInfo.initialPosY + 0.1){
     moleNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0,-0.1,0), moleNode.localMatrix);
   }else{
     moleNode.drawInfo.moleStatus = "inactive";
