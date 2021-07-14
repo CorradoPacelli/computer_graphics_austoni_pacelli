@@ -198,7 +198,7 @@ var keyFunctionDown = function (e) {
   if (e.keyCode == 65) { //a
     checkForMole(moleNode4)
   } 
-  if(e.keyCode == 83) { //s
+  if(e.keyCode == 68) { //d
     checkForMole(moleNode5)
   }
   if(e.keyCode == 32) { //barra spaziatrice

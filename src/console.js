@@ -154,7 +154,7 @@ function updateLocalMatricesMole(){
     }
   }
   */
-  if(Math.floor(Math.random() * 1000) < 20){
+  if(Math.floor(Math.random() * 1000) < 5){
     // una volta che sono entrato la razio è questa:
     // mi faccio una lista di mole inattive e tra le mole inattive ne scelgo una causale
     // per farla alzare, 
@@ -223,7 +223,7 @@ function updatePending(moleNode){
   timeDiff /= 1000;
 
   // get seconds 
-  if(timeDiff>1){
+  if(timeDiff>2){
     moleNode.drawInfo.moleStatus = "go down";
     //console.log("Faccio go down")
   }
@@ -245,7 +245,7 @@ function checkForMole(moleSelected){
 
   if(moleSelected.drawInfo.moleStatus != "inactive"){
     console.log("oh hai fatto punto!")
-    //fai scendere la mole
+    moleSelected.drawInfo.moleStatus = "go down"
   }else{
     console.log("no, hai toppato!")
   }
