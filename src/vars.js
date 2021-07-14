@@ -37,6 +37,9 @@ var moleNode4;
 var moleNode5;
 
 //animation
+var now;
+var lastMoleTime;
+var difficultInSeconds;
 var intero;
 var animationON;
 var moles = [];

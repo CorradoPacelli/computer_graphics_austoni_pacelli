@@ -128,10 +128,34 @@ function sceneGraph(){
 
 function updateLocalMatrices(){
 
-  //add all the inactive mole to inactiveMole array
+  //due possibilità: 
+  //--> talpe a secondi
+  //--> talpe a probabilità, preferisco questa onesto
+  
+  if(Math.floor(Math.random() * 1000) < 10){
+    moles.forEach(mole => {
+      console.log(mole.drawInfo.moleStatus)
+      if(mole.drawInfo.moleStatus == "inactive"){
+        inactiveMole.push(mole)
+      }
+    })
+    if(inactiveMole.length > 0){
+      //fai l'estrazione della mole da alzare
+      intero = Math.floor(Math.random()*inactiveMole.length)
+      moleExtracted = inactiveMole[intero];
+      console.log("Ho scelto la mole: " + intero)
+      moleExtracted.drawInfo.moleStatus = "go up";
+      moleExtracted.drawInfo.timeActivation = (new Date).getTime();
+      console.log(animationON)
+    }
+  }
+  
+  /*
+  difficultInSeconds = 0.5;
 
-  if(animationON){
-    animationON = false;
+  now = (new Date).getTime();
+  if((now-lastMoleTime)/1000 > difficultInSeconds){
+    lastMoleTime = now;
 
     moles.forEach(mole => {
       console.log(mole.drawInfo.moleStatus)
@@ -148,8 +172,8 @@ function updateLocalMatrices(){
       moleExtracted.drawInfo.timeActivation = (new Date).getTime();
       console.log(animationON)
     }
-    
   }
+  */
 
   moles.forEach(mole => {
     if(mole.drawInfo.moleStatus == "go up"){

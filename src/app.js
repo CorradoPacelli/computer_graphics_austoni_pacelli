@@ -13,7 +13,9 @@ function initializeVariables(){
   LPosy=5;
   LPosz=0;
   LDirTheta=60;
-  LDirPhi=45;                    
+  LDirPhi=45;   
+  
+  lastMoleTime =  (new Date).getTime();
   
   utils.resizeCanvasToDisplaySize(gl.canvas);
   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
