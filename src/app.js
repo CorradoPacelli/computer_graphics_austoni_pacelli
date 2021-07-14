@@ -186,22 +186,20 @@ function resetCamera(event){
 
 //TODO cambiare posizione della funzione
 var keyFunctionDown = function (e) {
-  if(startGame){
-    if (e.keyCode == 81) { //q
-      checkForMole(moleNode1)
-    }
-    if (e.keyCode == 87) { //w
-      checkForMole(moleNode2)
-    } 
-    if (e.keyCode == 69) { //e
-      checkForMole(moleNode3)
-    } 
-    if (e.keyCode == 65) { //a
-      checkForMole(moleNode4)
-    } 
-    if(e.keyCode == 83) { //s
-      checkForMole(moleNode5)
-    }
+  if (e.keyCode == 81) { //q
+    checkForMole(moleNode1)
+  }
+  if (e.keyCode == 87) { //w
+    checkForMole(moleNode2)
+  } 
+  if (e.keyCode == 69) { //e
+    checkForMole(moleNode3)
+  } 
+  if (e.keyCode == 65) { //a
+    checkForMole(moleNode4)
+  } 
+  if(e.keyCode == 83) { //s
+    checkForMole(moleNode5)
   }
   if(e.keyCode == 32) { //barra spaziatrice
     startGame = true
@@ -240,9 +238,6 @@ function drawScene() {
   // update the local matrices for each mole
   if(startGame){
     updateLocalMatricesMole();
-    
-    // questo deve essere fatto solo quando si preme il martello ciao
-    updateLocalMatricesHammer();
   }
 
   // Update world matrices for each object
@@ -269,7 +264,6 @@ function drawScene() {
     gl.uniform3fv(lightDirectionHandle,  lightDirectionTransformed);
     gl.uniform1f(specShineHandle, specShine);
     gl.uniform3fv(specColorHandle, specularColor);
-    //------------------------------------------------------------------
 
     if(object.drawInfo.buffer.texcoord != null){
       gl.uniform1i(hasTexture, 1);

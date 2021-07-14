@@ -200,7 +200,7 @@ function updateLocalMatricesMole(){
 }
 
 
-function updateLocalMatricesHammer(){
+function updateLocalMatricesHammer(moleSelected){
   // scrivi qui l'anizmazione
 }
 
@@ -240,8 +240,13 @@ function moleDown(moleNode){
 }
 
 function checkForMole(moleSelected){
+  // questo deve essere fatto solo quando si preme il martello
+  updateLocalMatricesHammer(moleSelected);
+
   if(moleSelected.drawInfo.moleStatus != "inactive"){
     console.log("oh hai fatto punto!")
     //fai scendere la mole
+  }else{
+    console.log("no, hai toppato!")
   }
 }
