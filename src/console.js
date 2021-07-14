@@ -129,7 +129,7 @@ function sceneGraph(){
 function updateLocalMatrices(){
 
   //add all the inactive mole to inactiveMole array
-  
+
   if(animationON){
     animationON = false;
 
@@ -139,8 +139,7 @@ function updateLocalMatrices(){
         inactiveMole.push(mole)
       }
     })
-
-    if(moles.length != 0){
+    if(inactiveMole.length > 0){
       //fai l'estrazione della mole da alzare
       intero = Math.floor(Math.random()*inactiveMole.length)
       moleExtracted = inactiveMole[intero];
