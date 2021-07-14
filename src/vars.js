@@ -24,7 +24,6 @@ var specShine;
 var RotX;
 var RotY;
 
-
 //variables to extract obj model properties
 var objects = []; //scene graph objects array
 var cabinetNode;
@@ -36,6 +35,13 @@ var moleNode2;
 var moleNode3;
 var moleNode4;
 var moleNode5;
+
+//animation
+var intero;
+var animationON;
+var moles = [];
+var moleExtracted;
+var keys = [];
 
 //buffer for each object, which contains position, indices, texture etc.
 var cabinetBuffer;
@@ -58,9 +64,6 @@ var LPosz;
 var LDirTheta;
 var LDirPhi;
 var spotDir=[];
-
-
-
 
 //object colors
 var cabinetColor;

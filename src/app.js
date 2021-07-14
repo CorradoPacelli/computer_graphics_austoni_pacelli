@@ -48,33 +48,16 @@ function initializeVariables(){
     indices: platformModel.indices,
     texcoord: null,
   }
-  //---------------------------------------------------------------------------------------
-
+  
   //directional light definition
   dirLightAlpha = -utils.degToRad(60);
   dirLightBeta  = -utils.degToRad(100);
-
 
 
   directionalLight = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
         -Math.sin(dirLightAlpha),
         -Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
   ];
-  
-  //set light position to pass to the shader for the spot light (that uses the light position like in the point light)
-  //lightPosition[0] = Rho*Math.sin(dirLightBeta)*Math.cos(dirLightAlpha);
-  //lightPosition[1] = Rho*Math.sin(dirLightBeta)*Math.sin(dirLightAlpha);
-  //lightPosition[2] = Rho*Math.cos(dirLightBeta);
-  lightPosition = [LPosx, LPosy, LPosz];              
-  
-  
-  //find spot direction from spherical coordinates
-  Rho=Math.sqrt(Math.pow(LPosx,2)+Math.pow(LPosy,2)+Math.pow(LPosz,2));
-  spotX = Rho*Math.sin(LDirPhi)*Math.cos(LDirTheta);
-  spotY = Rho*Math.sin(LDirPhi)*Math.sin(LDirTheta);
-  spotZ = Rho*Math.cos(LDirPhi);
-  spotDir = [spotX, spotY, spotZ];              //to be normalized in the shader
-  //spotDir = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),-Math.sin(dirLightAlpha),-Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)];
 
   dirLightColor = [1.0, 1.0, 1.0]; //initially white Color
   specularColor = [1.0, 1.0, 1.0];
@@ -95,14 +78,10 @@ function initializeVariables(){
   lightDirectionHandle = gl.getUniformLocation(program, 'lightDirection');
   normalMatrixPositionHandle = gl.getUniformLocation(program, 'nMatrix');
   hasTexture = gl.getUniformLocation(program, 'hasTexture');
-  dirLightColorHandle = gl.getUniformLocation(program, 'OlightColor');
+  dirLightColorHandle = gl.getUniformLocation(program, 'lightColor');
   specColorHandle = gl.getUniformLocation(program, 'specularColor');
   worldViewMatrixLocation = gl.getUniformLocation(program, 'worldViewMatrix');
   specShineHandle = gl.getUniformLocation(program, 'specShine');
-  ConeInHandle = gl.getUniformLocation(program, 'ConeSpotIn');
-  ConeOutHandle = gl.getUniformLocation(program, 'ConeSpotOut');
-  LightPosHandle = gl.getUniformLocation(program, 'LightPos');
-  SpotDirHandle = gl.getUniformLocation(program, 'SpotDirection');
   
   viewMatrix = utils.MakeView(cx, cy, cz, elevation, -angle);
   
@@ -201,40 +180,27 @@ function resetCamera(event){
   lookRadius = 5;
 }
 
-function updateLight(){
-//to properly render new values when slider changes 
-  //dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
-  //dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
-  ConeIn =  document.getElementById("ConeLightIn").value;
-  ConeOut = document.getElementById("ConeLightOut").value;
-  LPosx = document.getElementById("Px").value;
-  LPosy = document.getElementById("Py").value;
-  LPosz = document.getElementById("Pz").value;
-  console.log(LPosx);
-  console.log(LPosy);
-  console.log(LPosz);
+//TODO cambiare posizione della funzione
+var keyFunctionDown = function (e) {
+  if (!keys[e.keyCode]) {    
+    if(animationON){
+      animationON = false;
+    }else{
+      animationON = true;
+    }
+    console.log(animationON)
+  }
+}
 
-  LDirPhi = -utils.degToRad(document.getElementById("Phi").value);
-  LDirTheta = -utils.degToRad(document.getElementById("Theta").value);
-  
-  //console.log(ConeIn);
-  //console.log(ConeOut);
-  
-  directionalLight = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
-        -Math.sin(dirLightAlpha),
-        -Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
-  ];
-  //lightPosition[0] = Rho*Math.sin(dirLightBeta)*Math.cos(dirLightAlpha);
-  //lightPosition[1] = Rho*Math.sin(dirLightBeta)*Math.sin(dirLightAlpha);
-  //lightPosition[2] = Rho*Math.cos(dirLightBeta);
-  lightPosition = [LPosx, LPosy, LPosz];
-  Rho=Math.sqrt(Math.pow(LPosx,2)+Math.pow(LPosy,2)+Math.pow(LPosz,2));
-  spotX = Rho*Math.sin(LDirPhi)*Math.cos(LDirTheta);
-  spotY = Rho*Math.sin(LDirPhi)*Math.sin(LDirTheta);
-  spotZ = Rho*Math.cos(LDirPhi);
-  spotDir = [0, 1, 0];  
-  console.log(spotDir);
-  //spotDir = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),-Math.sin(dirLightAlpha),-Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)];
+function updateLight(){
+  //to properly render new values when slider changes
+    dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
+    dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
+
+    directionalLight = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
+          -Math.sin(dirLightAlpha),
+          -Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
+    ];
 }
 
 var internalCam = false;
@@ -284,10 +250,6 @@ function drawScene() {
     gl.uniform3fv(lightDirectionHandle,  lightDirectionTransformed);
     gl.uniform1f(specShineHandle, specShine);
     gl.uniform3fv(specColorHandle, specularColor);
-    gl.uniform1f(ConeInHandle, ConeIn);
-    gl.uniform1f(ConeOutHandle, ConeOut);
-    gl.uniform3fv(LightPosHandle,lightPosition);
-    gl.uniform3fv(SpotDirHandle,spotDir);
     //------------------------------------------------------------------
 
     if(object.drawInfo.buffer.texcoord != null){
@@ -316,6 +278,7 @@ function main() {
   canvas.addEventListener("mousemove", doMouseMove, false);
   canvas.addEventListener("mousewheel", doMouseWheel, false);
   canvas.addEventListener("dblclick", resetCamera);
+  window.addEventListener("keydown", keyFunctionDown, false);
 
   sceneGraph();
 
@@ -325,42 +288,42 @@ function main() {
 
 async function init(){
 
-var path = window.location.pathname;
-var page = path.split("/").pop();
-baseDir = window.location.href.replace(page, '');
-shaderDir = baseDir+"shaders/";
+  var path = window.location.pathname;
+  var page = path.split("/").pop();
+  baseDir = window.location.href.replace(page, '');
+  shaderDir = baseDir+"shaders/";
 
-canvas = document.getElementById("c");
-gl = canvas.getContext("webgl2");
-if (!gl) {
-    document.write("GL context not opened");
-    return;
-}
+  canvas = document.getElementById("c");
+  gl = canvas.getContext("webgl2");
+  if (!gl) {
+      document.write("GL context not opened");
+      return;
+  }
 
-await utils.loadFiles([shaderDir + 'vs.glsl', shaderDir + 'fs.glsl'], function (shaderText) {
-  var vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, shaderText[0]);
-  var fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, shaderText[1]);
-  program = utils.createProgram(gl, vertexShader, fragmentShader);
+  await utils.loadFiles([shaderDir + 'vs.glsl', shaderDir + 'fs.glsl'], function (shaderText) {
+    var vertexShader = utils.createShader(gl, gl.VERTEX_SHADER, shaderText[0]);
+    var fragmentShader = utils.createShader(gl, gl.FRAGMENT_SHADER, shaderText[1]);
+    program = utils.createProgram(gl, vertexShader, fragmentShader);
 
-});
-gl.useProgram(program);
+  });
+  gl.useProgram(program);
 
-//###################################################################################
-//This loads the objs model in the Models variable
-var cabinetObjStr = await utils.get_objstr(baseDir + cabinetStr);
-cabinetModel = new OBJ.Mesh(cabinetObjStr);
+  //###################################################################################
+  //This loads the objs model in the Models variable
+  var cabinetObjStr = await utils.get_objstr(baseDir + cabinetStr);
+  cabinetModel = new OBJ.Mesh(cabinetObjStr);
 
-var moleObjStr = await utils.get_objstr(baseDir + moleStr);
-moleModel = new OBJ.Mesh(moleObjStr);
+  var moleObjStr = await utils.get_objstr(baseDir + moleStr);
+  moleModel = new OBJ.Mesh(moleObjStr);
 
-var hammerObjStr = await utils.get_objstr(baseDir + hammerStr);
-hammerModel = new OBJ.Mesh(hammerObjStr);
+  var hammerObjStr = await utils.get_objstr(baseDir + hammerStr);
+  hammerModel = new OBJ.Mesh(hammerObjStr);
 
-var platformObjStr = await utils.get_objstr(baseDir + platformStr);
-platformModel = new OBJ.Mesh(platformObjStr);
-//###################################################################################
+  var platformObjStr = await utils.get_objstr(baseDir + platformStr);
+  platformModel = new OBJ.Mesh(platformObjStr);
+  //###################################################################################
 
-main();
+  main();
 }
 
 window.onload = init;

@@ -1,121 +1,117 @@
 <!DOCTYPE html>
 <html lang="en-US">
 
-	<head>
-	<link rel="icon" href="model/favicon.png" type="image/x-icon">
+<head>
+    <link rel="icon" href="model/favicon.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Whack a Mole by Austoni & Pacelli</title>
+    <title>Whack a mole - Austoni Pacelli</title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        background-color: gray;
+      }
+      canvas {
+        display: block;
+        background-color: white;
+      }
+
+      .slider
+      {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 25px;
+        background: #d3d3d3;
+        outline: none;
+        opacity: 0.7;
+        -webkit-transition: .2s;
+        transition: opacity .2s;
+      }
+
+    /* basic positioning */
+      .legend { list-style: outside; table-layout:fixed;}
+      .legend li { float: left; margin-right: 40px; }
+      .legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
+      /* your colors */
+      .legend .protons { background-color: #285fF8; }
+      .legend .neutrons { background-color: #f02623; }
+      .legend .electrons { background-color: #e4f323; }
+
+        </style>
+
         <script type="text/javascript" src="./src/vars.js"></script>
         <script type="text/javascript" src="./src/webgl-obj-loader.min.js"></script>
         <script type="text/javascript" src="./src/utils.js"></script>
         <script type="text/javascript" src="./src/console.js"></script>
         <script type="text/javascript" src="./src/app.js"></script>
-	
-	<body style="background-color: grey; font-family: verdana" onLoad="init()">
-		<canvas id="c" style="background-color: #ADECE9;">
-			Your browser doesn't support the Canvas Element!
-		</canvas>
-		
-		<div align='right' style="position:absolute; right: 50px; top: 5px; width:auto; height:auto; padding: 10px 15px 15px 10px;">
-			<h2><b>GAME COUNTERS</b></h2>
-			<div style="position:relative; top:-20px">
-				<h4 style="display:inline; float:left">REMAINING TIME:</h4>
-				<h4 id="remTime" style="display:inline; float:right">30.0 s</h4>
-			</div>
-			<div style="position:relative; top:-50px">
-				<h4 style="display:inline; float:left">MOLE HIT COUNT:&emsp;&emsp;&emsp;&emsp;&emsp;</h4>
-				<h4 id="moleHit" style="display:inline; float:right">0</h4>
-			</div>
-		</div>
+</head>
 
-		<div id="panel" style="position:absolute; text-align: center; right: 50px; top: 400px; width:auto; height:auto; overflow:auto;">
-			<p></p><h2> LIGHT PANEL </h2><p></p>
-			<div>
-				<b> ADJUST LIGHT DIR </b>
-				<br>
-				<input type="range" min="0" max="180" step="1" id="Theta"> Light Dir Theta
-				<br>
-				<input type="range" min="-180" max="180" step="1" id="Phi"> Light Dir Phi
-				<br>
-				<input type="range" min="-50" max="50" step="1" value="0" id="Px"> Light Pos x
-				<br>
-				<input type="range" min="-50" max="50" step="1" value="5" id="Py"> Light Pos y
-				<br>
-				<input type="range" min="-50" max="50" step="1" value="0" id="Pz"> Light Pos z
-				<br>
-				<input type="range" min="0" max="1" step="0.01" value="45" id="ConeLightIn"> Cone In      <!-- ConeIn is expressed in % with respect to the cone out, for this reason the slider varies from 0 to 100 -->
-				<br>
-				<input type="range" min="0" max="180" step="1" value="45" id="ConeLightOut"> Cone Out
-				<br>
-			</div>
-			<br>
-			<div>
-				<b> ADJUST LIGHT COLOR </b>
-				<br>
-				<input type="color" id="lightcol" value="#ffe41a" onchange="onLightColorChange(this.value)">
-			</div>
-			<br>
-			<div>
-				<b> ADJUST SPECULAR LIGHT</b>
-				<br>
-				<input type="color" id="lightcol" value="#ffffff" onchange="onSpecColorChange(this.value)">
-			</div>
-		</div>
-		
-		<div id="game" style="position:absolute; text-align: center; right: 50px; top: 180px; width:auto; height:auto; overflow:auto;">
-			<p></p><h2> GAME MODE </h2><p></p>
-			<div>
-				<br>
-				<b> SELECT GAME MODE:&emsp;&emsp; </b>
-            	<select id="drop-down" name="GameMode" onchange="onDropdownChange(this.value);">
-                	<option value="1" selected>EASY</option>
-               		<option value="2">HARD</option>
-                	<option value="3">EXTREME</option>
-            	</select>
-				<br>
-				<br>
-				<b> SOUND:&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; </b>
-				<input type="checkbox" id="chbx" onclick="onCheckBoxChange(this.checked);"/> On/Off<br/>
-				<br>
-			</div>
-		</div>
-		<!--
-		<center>
-			<h3>Use the following keys</h3>
-			<table border="1">
-			  <tr>
-				<td><center>CamX</td>
-				<td><center>CamY</td>
-				<td><center>CamZ</td>
-				<td><center>Elevation</td>
-				<td><center>Angle</td>
-				<td><center>Hit Mole</td>
-			  <tr>
-				<td><center>Click/Move Mouse Left</td>
-				<td><center>Scroll Up</td>
-				<td><center>Click/Move Mouse Up</td>
-				<td><center>A (+)</td>
-				<td><center>R (cw)</td>
-				<td><center>Mouse Click</td>
-			  <tr>
-				<td><center>Click/Move Mouse Right</td>
-				<td><center>Scroll Down</td>
-				<td><center>Click/Move Mouse Down</td>
-				<td><center>D (-)</td>
-				<td><center>F (ccw)</td>
-				<td><center></td>
-			  </tr>
-			<table/>
-			
-			-->
-			
-	</body>
-	<!--
-	<audio id="missileLaunch" src="audio/missileLaunch.mp3"></audio>
-	<audio id="missileEnded" src="audio/missileBoom.mp3"></audio>
-	-->
-	<script>
+
+<body>
+
+  <canvas id="c" style="background: rgb(90,89,93);background: linear-gradient(0deg, rgba(90,89,93,1) 0%, rgba(17,12,3,1) 100%);"></canvas>
+  
+   <div id="legend" style="position: absolute; z-index: 1; left: 20px; top: 50px; width:300px; height:325px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto; text-align:center">
+        <p style="font-family: Helvetica; font-size:larger">
+          <b> Light Manipulation</b>     
+          <ul style="font-family: Helvetica; font-size:larger">
+            Direction &alpha;<br>
+            <div class="slidecontainer"> <input type="range" min="0" max="180" step="1" value="60" id="dirAlpha"></div> </br>
+            Direction &beta;<br>
+            <div class="slidecontainer"> <input type="range" min="-180" max="180" step="1" value="100" id="dirBeta"></div> </br>
+            Change Light Color  <br> 
+            <input type="color" id="lightcol" value="#ffffff" onchange="onLightColorChange(this.value)"> <br> </br>
+            Specular Color <br>
+            <input type="color" id="lightcol" value="#ffffff" onchange="onSpecColorChange(this.value)"> <br> </br>
+            Shiny &gamma; <br>
+            <div class="slidecontainer"> <input type="range" min="10" max="100" id="specShine" value="24" onchange="onSpecShineChange(this.value)"></div> </br>
+          </ul>
+        </p>
+      </div> 
+
+      <div id="legend" style="position: absolute; z-index: 1; right: 20px; top: 50px; width:240px; height:300px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto">
+        
+         <p style="font-family: Helvetica; font-size:larger">
+          <b>Navigation Menu</b>     
+          <ul style="font-family: Helvetica; font-size:larger; " class="legend">
+            <li><a href="#null">Carbon</a></li> <br>
+            <li><a href="./hydro.html">Hydrogen</a></li><br>
+            <li><a href="./helium.html">Helium</a></li><br>
+            <li><a href="./oxygen.html">Oxygen </a></li><br>
+          </ul>
+        </p>
+        <p style="font-family: Helvetica; font-size:larger">
+          <b>Legend</b>
+          <ul style="font-family: Helvetica; font-size:larger" class="legend"> 
+            <li><span class="protons"></span> Protons</li>
+            <li><span class="neutrons"></span> Neutrons</li>
+            <li><span class="electrons"></span> Electrons</li>
+          </ul>
+        </p>
+      </div>
+
+     
+      <button style="position: absolute; z-index: 1; right: 20px; bottom: 270px; height:50px; width:100px" onclick="myFunction()">Show/Hide InfoBox</button>
+
+      <div id="infoBox" style="font-family: Helvetica; position: absolute; z-index: 1; right: 20px; bottom: 50px; width:350px; height:195px; background-color: white; border-style: dotted; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto; font-size: large">
+         Carbon (from Latin: carbo "coal") is a chemical element with the symbol C and atomic number 6. It is the second most abundant element in the human body by mass (about 18.5%) after oxygen. Carbon forms a vast number of compounds, more than any other element, with almost ten million compounds described to date, and yet that number is but a fraction of the number of theoretically possible compounds under standard conditions. For this reason, carbon has often been referred to as the "king of the elements"
+      </div>
+
+      <div id="legend" style="position: absolute; z-index: 1; left: 20px; bottom: 50px; width:350px; height:205px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto">
+        <p style="font-family: Helvetica; font-size:larger">
+          <b>Controls</b>     
+          <ul style="font-family: Helvetica; font-size:larger;">
+            <li>Left Click & Drag: move the camera around</li>
+            <li>Double Click: reset camera position</li>
+            <li>Scroll Up/Down: Zoom Out/In the camera</li>
+            <li>Spacebar: quickly switch from internal/external view</li>
+          </ul>
+        </p>
+      </div>  
+  
+
+  <!-- ADDITIONAL SCRIPTS -->
+  <script>
     function HEX2RGB(hex) {
         "use strict";
         if (hex.charAt(0) === '#') {
@@ -146,8 +142,17 @@
         }
         return [r, g, b];
     }
-    
-	  function onLightColorChange(value){
+
+      function myFunction() {
+        var x = document.getElementById("infoBox");
+        if (x.style.display === "none") {
+          x.style.display = "block";  
+        } else {
+          x.style.display = "none";
+        }
+      }
+
+      function onLightColorChange(value){
         let result = HEX2RGB(value);
         var r = result[0]/255.0;
         var g = result[1]/255.0;
@@ -168,5 +173,7 @@
       }
 
    </script>
+
+</body>
 
 </html>
