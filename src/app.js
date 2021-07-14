@@ -1,5 +1,7 @@
 function initializeVariables(){
 
+  startGame = false;
+
   cx = 2.0;
   cy = 2.0;
   cz = 6.5;
@@ -184,13 +186,25 @@ function resetCamera(event){
 
 //TODO cambiare posizione della funzione
 var keyFunctionDown = function (e) {
-  if (!keys[e.keyCode]) {    
-    if(animationON){
-      animationON = false;
-    }else{
-      animationON = true;
+  if(startGame){
+    if (e.keyCode == 81) { //q
+      checkForMole(moleNode1)
     }
-    console.log(animationON)
+    if (e.keyCode == 87) { //w
+      checkForMole(moleNode2)
+    } 
+    if (e.keyCode == 69) { //e
+      checkForMole(moleNode3)
+    } 
+    if (e.keyCode == 65) { //a
+      checkForMole(moleNode4)
+    } 
+    if(e.keyCode == 83) { //s
+      checkForMole(moleNode5)
+    }
+  }
+  if(e.keyCode == 32) { //barra spaziatrice
+    startGame = true
   }
 }
 
@@ -204,8 +218,6 @@ function updateLight(){
           -Math.cos(dirLightAlpha) * Math.sin(dirLightBeta)
     ];
 }
-
-var internalCam = false;
 
 function drawScene() {
 
@@ -226,10 +238,12 @@ function drawScene() {
   perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
 
   // update the local matrices for each mole
-  updateLocalMatricesMole();
-
-  // questo deve essere fatto solo quando si preme il martello ciao
-  updateLocalMatricesHammer();
+  if(startGame){
+    updateLocalMatricesMole();
+    
+    // questo deve essere fatto solo quando si preme il martello ciao
+    updateLocalMatricesHammer();
+  }
 
   // Update world matrices for each object
   cabinetNode.updateWorldMatrix();

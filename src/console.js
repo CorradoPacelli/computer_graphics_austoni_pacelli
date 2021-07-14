@@ -151,7 +151,6 @@ function updateLocalMatricesMole(){
       console.log("Ho scelto la mole: " + intero)
       moleExtracted.drawInfo.moleStatus = "go up";
       moleExtracted.drawInfo.timeActivation = (new Date).getTime();
-      console.log(animationON)
     }
   }
   */
@@ -162,7 +161,7 @@ function updateLocalMatricesMole(){
     // ho pensato di fare così perchè in questo modo non rischiamo di estrarre una talpa che è già su
     // 
     moles.forEach(mole => {
-      console.log(mole.drawInfo.moleStatus)
+      //console.log(mole.drawInfo.moleStatus)
       if(mole.drawInfo.moleStatus == "inactive"){
         inactiveMole.push(mole)
       }
@@ -174,10 +173,9 @@ function updateLocalMatricesMole(){
       //fai l'estrazione della mole da alzare
       intero = Math.floor(Math.random()*inactiveMole.length)
       moleExtracted = inactiveMole[intero];
-      console.log("Ho scelto la mole: " + intero)
+      //console.log("Ho scelto la mole: " + intero)
       moleExtracted.drawInfo.moleStatus = "go up";
       moleExtracted.drawInfo.timeActivation = (new Date).getTime();
-      console.log(animationON)
     }
   }
   // tranquillissimo, leggi questo commento qui
@@ -213,7 +211,7 @@ function moleUp(moleNode){
     moleNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0,0.1,0), moleNode.localMatrix);
   }else{
     moleNode.drawInfo.moleStatus = "pending";
-    console.log("Faccio pending")
+    //console.log("Faccio pending")
   }
 }
 
@@ -227,7 +225,7 @@ function updatePending(moleNode){
   // get seconds 
   if(timeDiff>1){
     moleNode.drawInfo.moleStatus = "go down";
-    console.log("Faccio go down")
+    //console.log("Faccio go down")
   }
 }
 
@@ -237,6 +235,13 @@ function moleDown(moleNode){
     moleNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0,-0.1,0), moleNode.localMatrix);
   }else{
     moleNode.drawInfo.moleStatus = "inactive";
-    console.log("Faccio inactive")
+    //console.log("Faccio inactive")
+  }
+}
+
+function checkForMole(moleSelected){
+  if(moleSelected.drawInfo.moleStatus != "inactive"){
+    console.log("oh hai fatto punto!")
+    //fai scendere la mole
   }
 }

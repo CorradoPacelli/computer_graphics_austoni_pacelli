@@ -41,10 +41,11 @@ var now;
 var lastMoleTime;
 var difficultInSeconds;
 var intero;
-var animationON;
 var moles = [];
 var moleExtracted;
-var keys = [];
+
+//game status
+var startGame;
 
 //buffer for each object, which contains position, indices, texture etc.
 var cabinetBuffer;
