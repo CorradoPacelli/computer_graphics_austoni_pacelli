@@ -225,8 +225,11 @@ function drawScene() {
 
   perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
 
-  // update the local matrices for each object
-  updateLocalMatrices();
+  // update the local matrices for each mole
+  updateLocalMatricesMole();
+
+  // questo deve essere fatto solo quando si preme il martello
+  updateLocalMatricesHammer();
 
   // Update world matrices for each object
   cabinetNode.updateWorldMatrix();

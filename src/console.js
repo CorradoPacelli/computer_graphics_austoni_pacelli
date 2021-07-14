@@ -9,7 +9,7 @@ var objsTexture = 'Assets/Mole.png';
 
 
 function sceneGraph(){
-
+      
       cabinetNode = new Node();
       cabinetNode.localMatrix = utils.MakeTranslateMatrix(0.0,0.0,0.0);
       cabinetNode.drawInfo = {
@@ -18,7 +18,7 @@ function sceneGraph(){
       };
 
       hammerNode = new Node();
-      hammerNode.localMatrix = utils.MakeTranslateMatrix(0.0,2.0,4.0);
+      hammerNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.0,4.0),utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo = {
         buffer: hammerBuffer,
         vao: vao2,
@@ -96,7 +96,7 @@ function sceneGraph(){
         timeActivation: null,
         timeElapsed: null,
       };
-
+      
       hammerNode.setParent(cabinetNode);
       platformNode.setParent(cabinetNode);
       moleNode1.setParent(cabinetNode);
@@ -126,29 +126,10 @@ function sceneGraph(){
 
 }
 
-function updateLocalMatrices(){
-
+function updateLocalMatricesMole(){
   //due possibilità: 
   //--> talpe a secondi
   //--> talpe a probabilità, preferisco questa onesto
-  
-  if(Math.floor(Math.random() * 1000) < 10){
-    moles.forEach(mole => {
-      console.log(mole.drawInfo.moleStatus)
-      if(mole.drawInfo.moleStatus == "inactive"){
-        inactiveMole.push(mole)
-      }
-    })
-    if(inactiveMole.length > 0){
-      //fai l'estrazione della mole da alzare
-      intero = Math.floor(Math.random()*inactiveMole.length)
-      moleExtracted = inactiveMole[intero];
-      console.log("Ho scelto la mole: " + intero)
-      moleExtracted.drawInfo.moleStatus = "go up";
-      moleExtracted.drawInfo.timeActivation = (new Date).getTime();
-      console.log(animationON)
-    }
-  }
   
   /*
   difficultInSeconds = 0.5;
@@ -174,7 +155,37 @@ function updateLocalMatrices(){
     }
   }
   */
-
+  if(Math.floor(Math.random() * 1000) < 20){
+    // una volta che sono entrato la razio è questa:
+    // mi faccio una lista di mole inattive e tra le mole inattive ne scelgo una causale
+    // per farla alzare, 
+    // ho pensato di fare così perchè in questo modo non rischiamo di estrarre una talpa che è già su
+    // 
+    moles.forEach(mole => {
+      console.log(mole.drawInfo.moleStatus)
+      if(mole.drawInfo.moleStatus == "inactive"){
+        inactiveMole.push(mole)
+      }
+    })
+    //questo è un foreach, il foreach in javascript funziona così
+    // è una funzione delle strutture dati quindi lo chiami su una struttura dati che in questo
+    //caso è moles, che ha tutti i 5 nodi delle mole
+    if(inactiveMole.length > 0){
+      //fai l'estrazione della mole da alzare
+      intero = Math.floor(Math.random()*inactiveMole.length)
+      moleExtracted = inactiveMole[intero];
+      console.log("Ho scelto la mole: " + intero)
+      moleExtracted.drawInfo.moleStatus = "go up";
+      moleExtracted.drawInfo.timeActivation = (new Date).getTime();
+      console.log(animationON)
+    }
+  }
+  // tranquillissimo, leggi questo commento qui
+  //la cosa veramente importante è questo forEach qui,
+  //questo foreach va a modificare la posizione delle mole a seconda del loro stato
+  // infatti si chiede per ogni mole qual è lo stato e quindi quale funzione chiamare 
+  // bada bene che questa lista è moles e non inactive moles, quindi ogni mole verrà modificata
+  // ovviamente se la mole è inattiva non farà nulla perchè non devo modificarla
   moles.forEach(mole => {
     if(mole.drawInfo.moleStatus == "go up"){
       moleUp(mole);
@@ -184,10 +195,17 @@ function updateLocalMatrices(){
       moleDown(mole);
     }
   })
-  
-
+  // si, allora questo foreach qui lo fa sempre ad ogni frame non importa cosa
+  // il codice che c'è immediatamente sopra viene fatto solo quando estraggo la mole
   inactiveMole = []
+  // alla fine inactiveMole viene svuotato
 }
+
+
+function updateLocalMatricesHammer(){
+  // scrivi qui l'anizmazione
+}
+
 
 function moleUp(moleNode){
   //[7] == y
@@ -222,4 +240,3 @@ function moleDown(moleNode){
     console.log("Faccio inactive")
   }
 }
-
