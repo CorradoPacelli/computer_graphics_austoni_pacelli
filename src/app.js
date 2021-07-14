@@ -228,7 +228,7 @@ function drawScene() {
   // update the local matrices for each mole
   updateLocalMatricesMole();
 
-  // questo deve essere fatto solo quando si preme il martello
+  // questo deve essere fatto solo quando si preme il martello ciao
   updateLocalMatricesHammer();
 
   // Update world matrices for each object
