@@ -53,7 +53,7 @@ function sceneGraph(){
       moleNode2.localMatrix = utils.MakeTranslateMatrix(0.0,0.65,0.21);
       moleNode2.drawInfo = {
         buffer: moleBuffer,
-        vao: vao4,
+        vao: vao5,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -64,7 +64,7 @@ function sceneGraph(){
       moleNode3.localMatrix = utils.MakeTranslateMatrix(0.63,0.65,0.21);
       moleNode3.drawInfo = {
         buffer: moleBuffer,
-        vao: vao4,
+        vao: vao6,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -75,7 +75,7 @@ function sceneGraph(){
       moleNode4.localMatrix = utils.MakeTranslateMatrix(-0.31,0.6,0.65);
       moleNode4.drawInfo = {
         buffer: moleBuffer,
-        vao: vao4,
+        vao: vao7,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -86,7 +86,7 @@ function sceneGraph(){
       moleNode5.localMatrix = utils.MakeTranslateMatrix(0.31,0.6,0.65);
       moleNode5.drawInfo = {
         buffer: moleBuffer,
-        vao: vao4,
+        vao: vao8,
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
@@ -125,7 +125,6 @@ function updateLocalMatrices(){
 
   //add all the inactive mole to inactiveMole array
   
-
   if(animationON){
     animationON = false;
 
