@@ -18,7 +18,9 @@ function sceneGraph(){
       };
 
       hammerNode = new Node();
-      hammerNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.0,4.0),utils.MakeRotateXMatrix(10));
+      
+      hstep1= utils.multiplyMatrices(utils.MakeScaleMatrix(0.6),utils.MakeTranslateMatrix(0.0,2.8,3.0));
+      hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo = {
         buffer: hammerBuffer,
         vao: vao2,
@@ -47,7 +49,7 @@ function sceneGraph(){
         timeActivation: null,
         timeElapsed: null,
       };
-      //status are ---> inactive, go up, pending, go down
+      //status is ---> inactive, go up, pending, go down
 
       //mole 2 in alto al centro
       moleNode2 = new Node();
@@ -145,7 +147,7 @@ function updateLocalMatricesMole(){
       }
     })
     if(inactiveMole.length > 0){
-      //fai l'estrazione della mole da alzare
+      //fai l estrazione della mole da alzare
       intero = Math.floor(Math.random()*inactiveMole.length)
       moleExtracted = inactiveMole[intero];
       console.log("Ho scelto la mole: " + intero)
@@ -155,7 +157,7 @@ function updateLocalMatricesMole(){
     }
   }
   */
-  if(Math.floor(Math.random() * 1000) < 20){
+  if(Math.floor(Math.random() * 1000) < 10){
     // una volta che sono entrato la razio è questa:
     // mi faccio una lista di mole inattive e tra le mole inattive ne scelgo una causale
     // per farla alzare, 

@@ -45,6 +45,7 @@ var animationON;
 var moles = [];
 var moleExtracted;
 var keys = [];
+var hole
 
 //buffer for each object, which contains position, indices, texture etc.
 var cabinetBuffer;

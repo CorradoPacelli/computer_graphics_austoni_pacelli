@@ -195,7 +195,7 @@ var keyFunctionDown = function (e) {
 }
 
 function updateLight(){
-  //to properly render new values when slider changes
+  //to properly render new values when slider changes   
     dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
     dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
 
@@ -229,7 +229,8 @@ function drawScene() {
   updateLocalMatricesMole();
 
   // questo deve essere fatto solo quando si preme il martello
-  updateLocalMatricesHammer();
+  hole = 1;
+  updateLocalMatricesHammer(hole);
 
   // Update world matrices for each object
   cabinetNode.updateWorldMatrix();
