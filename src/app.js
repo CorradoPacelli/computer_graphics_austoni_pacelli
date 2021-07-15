@@ -207,7 +207,7 @@ var keyFunctionDown = function (e) {
 }
 
 function updateLight(){
-  //to properly render new values when slider changes
+  //to properly render new values when slider changes   
     dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
     dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
 
@@ -236,9 +236,14 @@ function drawScene() {
   perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
 
   // update the local matrices for each mole
+
   if(startGame){
     updateLocalMatricesMole();
   }
+  // questo deve essere fatto solo quando si preme il martello
+  hole = 1;
+  updateLocalMatricesHammer(hole);
+
 
   // Update world matrices for each object
   cabinetNode.updateWorldMatrix();

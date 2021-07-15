@@ -43,6 +43,8 @@ var difficultInSeconds;
 var intero;
 var moles = [];
 var moleExtracted;
+var keys = [];
+var hole
 
 //game status
 var startGame;
