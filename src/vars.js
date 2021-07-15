@@ -44,7 +44,8 @@ var intero;
 var moles = [];
 var moleExtracted;
 var keys = [];
-var hole
+var mole;
+var count=0;
 
 //game status
 var startGame;

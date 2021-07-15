@@ -241,8 +241,9 @@ function drawScene() {
     updateLocalMatricesMole();
   }
   // questo deve essere fatto solo quando si preme il martello
-  hole = 1;
-  updateLocalMatricesHammer(hole);
+  mole=moleNode2;
+  count = count + 1;
+  updateLocalMatricesHammer(mole,count);
 
 
   // Update world matrices for each object

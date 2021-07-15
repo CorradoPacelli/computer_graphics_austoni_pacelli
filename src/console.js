@@ -18,12 +18,15 @@ function sceneGraph(){
       };
 
       hammerNode = new Node();
-      
-      hstep1= utils.multiplyMatrices(utils.MakeScaleMatrix(0.6),utils.MakeTranslateMatrix(0.0,2.8,3.0));
+      hstep1= utils.multiplyMatrices(utils.MakeScaleMatrix(0.6),utils.MakeTranslateMatrix(0.0,3.0,3.0));
       hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo = {
         buffer: hammerBuffer,
         vao: vao2,
+        initialPos: [0.0,3.0,3.0],
+        curPos: [0.0,3.0,3.0],
+        hammerDir: [0,0,-1],
+        status: "inactive",
       };
 
       platformNode = new Node();
@@ -44,10 +47,11 @@ function sceneGraph(){
       moleNode1.drawInfo = {
         buffer: moleBuffer,
         vao: vao4,
-        initialPosY: 0.65,
+        initialPos: [-0.63,0.65,0.21],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: -0.003,
       };
       //status is ---> inactive, go up, pending, go down
 
@@ -57,10 +61,11 @@ function sceneGraph(){
       moleNode2.drawInfo = {
         buffer: moleBuffer,
         vao: vao5,
-        initialPosY: 0.65,
+        initialPos: [0.0,0.65,0.21],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: 0,
       };
 
       //mole 3 in alto a destra
@@ -69,10 +74,11 @@ function sceneGraph(){
       moleNode3.drawInfo = {
         buffer: moleBuffer,
         vao: vao6,
-        initialPosY: 0.65,
+        initialPos: [0.63,0.65,0.21],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: 0.003,
       };
 
       //mole 4 in basso a sinistra
@@ -81,10 +87,11 @@ function sceneGraph(){
       moleNode4.drawInfo = {
         buffer: moleBuffer,
         vao: vao7,
-        initialPosY: 0.6,
+        initialPos: [-0.31,0.6,0.65],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: -0.003,
       };
 
       //mole 5 in basso a destra
@@ -93,10 +100,11 @@ function sceneGraph(){
       moleNode5.drawInfo = {
         buffer: moleBuffer,
         vao: vao8,
-        initialPosY: 0.6,
+        initialPos: [0.31,0.6,0.65],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: 0.003,
       };
       
       hammerNode.setParent(cabinetNode);
@@ -202,14 +210,30 @@ function updateLocalMatricesMole(){
 }
 
 
-function updateLocalMatricesHammer(moleSelected){
-  // scrivi qui l'anizmazione
+function updateLocalMatricesHammer(mole){
+  //if(hammerNode.status=="active"){
+            console.log("hole pos" + mole.drawInfo.initialPos)
+            console.log("hammer pos" + hammerNode.drawInfo.initialPos)
+            MHvec=minus(mole.drawInfo.initialPos,hammerNode.drawInfo.initialPos);
+            console.log(MHvec)
+            increment=division(MHvec,100.0); 
+            rot= -3;
+            console.log("increment" + increment)
+            hammerNode.localMatrix=utils.multiplyMatrices(utils.MakeTranslateMatrix(increment[0]+mole.drawInfo.inc,0,increment[2]),hammerNode.localMatrix);
+            hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,utils.MakeRotateXYZMatrix(rot,0,0));
+            if(count%45==0){
+                hstep1= utils.multiplyMatrices(utils.MakeScaleMatrix(0.6),utils.MakeTranslateMatrix(0.0,3.0,3.0));
+                hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
+                hammerNode.status="inactive";
+            }
+   // }
 }
+
 
 
 function moleUp(moleNode){
   //[7] == y
-  if(moleNode.localMatrix[7] <= moleNode.drawInfo.initialPosY + 0.49){
+  if(moleNode.localMatrix[7] <= moleNode.drawInfo.initialPos[1] + 0.49){
     moleNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0,0.1,0), moleNode.localMatrix);
   }else{
     moleNode.drawInfo.moleStatus = "pending";
@@ -233,7 +257,7 @@ function updatePending(moleNode){
 
 function moleDown(moleNode){
   //[7] == y
-  if(moleNode.localMatrix[7] >= moleNode.drawInfo.initialPosY + 0.1){
+  if(moleNode.localMatrix[7] >= moleNode.drawInfo.initialPos[1] + 0.1){
     moleNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0,-0.1,0), moleNode.localMatrix);
   }else{
     moleNode.drawInfo.moleStatus = "inactive";
@@ -251,4 +275,42 @@ function checkForMole(moleSelected){
   }else{
     console.log("no, hai toppato!")
   }
+}
+
+  function minus(a,b){
+    x = [];
+    for(var i = 0;i<=b.length-1;i++){
+        x.push(a[i] - b[i]);
+    }
+    return x    
+  }
+  
+function division(a,b){
+    x = [];
+    for(var i = 0;i<=a.length-1;i++){
+        x.push(a[i]/b);
+    }
+    return x    
+  }
+  
+  function sum(a,b){
+    x = [];
+    for(var i = 0;i<=b.length-1;i++){
+        x.push(a[i] + b[i]);
+    }
+    return x    
+  }
+  
+  function norm3(a){
+      x=Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2))
+  }
+  
+  
+
+function dot_product(vector1, vector2) {
+  let result = 0;
+  for (let i = 0; i < 3; i++) {
+    result += vector1[i] * vector2[i];
+  }
+  return result;
 }
