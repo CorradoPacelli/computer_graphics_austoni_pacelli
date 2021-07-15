@@ -18,7 +18,7 @@ function sceneGraph(){
       };
 
       hammerNode = new Node();
-      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.5,3.0),utils.MakeScaleMatrix(0.6));
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.0,3.0),utils.MakeScaleMatrix(0.6));
       hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo = {
         buffer: hammerBuffer,
@@ -185,15 +185,18 @@ function updateLocalMatricesMole(){
 
 function updateLocalMatricesHammer(){
   if(hammerNode.drawInfo.status=="active"){
-    hammerNode.localMatrix=utils.multiplyMatrices(utils.MakeTranslateMatrix(increment[0],0,increment[2]),hammerNode.localMatrix);
+    hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,utils.MakeTranslateMatrix(increment[0],0,increment[2]));
+    
     
     deltaQ = Quaternion.fromEuler(0,rot*rad,0,order = "ZXY")
     q = deltaQ.mul(q)
 
-    hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,q.toMatrix4());
+    tmp = utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.5,0.0),utils.multiplyMatrices(q.toMatrix4(),utils.MakeTranslateMatrix(0.0,-1.5,0.0)))
+
+    hammerNode.localMatrix=utils.multiplyMatrices(tmp,hammerNode.localMatrix);
 
     if(hammerNode.localMatrix[11] <= hammerNode.drawInfo.moleHitted.drawInfo.initialPos[2]){
-      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.5,3.0),utils.MakeScaleMatrix(0.6));
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.0,3.0),utils.MakeScaleMatrix(0.6));
       hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo.status="inactive";
     }
