@@ -28,15 +28,6 @@
         transition: opacity .2s;
       }
 
-    /* basic positioning */
-      .legend { list-style: outside; table-layout:fixed;}
-      .legend li { float: left; margin-right: 40px; }
-      .legend span { border: 1px solid #ccc; float: left; width: 12px; height: 12px; margin: 2px; }
-      /* your colors */
-      .legend .protons { background-color: #285fF8; }
-      .legend .neutrons { background-color: #f02623; }
-      .legend .electrons { background-color: #e4f323; }
-
         </style>
 
         <script type="text/javascript" src="./src/vars.js"></script>
@@ -51,64 +42,50 @@
 
   <canvas id="c" style="background: rgb(90,89,93);background: linear-gradient(0deg, rgba(90,89,93,1) 0%, rgba(17,12,3,1) 100%);"></canvas>
   
-   <div id="legend" style="position: absolute; z-index: 1; left: 20px; top: 50px; width:300px; height:325px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto; text-align:center">
-        <p style="font-family: Helvetica; font-size:larger">
-          <b> Light Manipulation</b>     
-          <ul style="font-family: Helvetica; font-size:larger">
-            Direction &alpha;<br>
-            <div class="slidecontainer"> <input type="range" min="0" max="180" step="1" value="60" id="dirAlpha"></div> </br>
-            Direction &beta;<br>
-            <div class="slidecontainer"> <input type="range" min="-180" max="180" step="1" value="100" id="dirBeta"></div> </br>
-            Change Light Color  <br> 
-            <input type="color" id="lightcol" value="#ffffff" onchange="onLightColorChange(this.value)"> <br> </br>
-            Specular Color <br>
-            <input type="color" id="lightcol" value="#ffffff" onchange="onSpecColorChange(this.value)"> <br> </br>
-            Shiny &gamma; <br>
-            <div class="slidecontainer"> <input type="range" min="10" max="100" id="specShine" value="24" onchange="onSpecShineChange(this.value)"></div> </br>
-          </ul>
-        </p>
-      </div> 
+   <div id="legend" style="position: absolute; z-index: 1; left: 20px; top: 0px; width:280px; height:440px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; overflow:auto; text-align:center">
+      <p style="font-family: Helvetica; font-size:larger">
+        <b> Light Manipulation</b>     
+        <ul style="font-family: Helvetica; font-size:larger">
+          Direction &alpha;<br>
+          <div class="slidecontainer"> <input type="range" min="0" max="180" step="1" value="60" id="dirAlpha"></div> </br>
+          Direction &beta;<br>
+          <div class="slidecontainer"> <input type="range" min="-180" max="180" step="1" value="100" id="dirBeta"></div> </br>
+          Change Light Color  <br> 
+          <input type="color" id="lightcol" value="#ffffff" onchange="onLightColorChange(this.value)"> <br> </br>
+          Specular Color <br>
+          <input type="color" id="lightcol" value="#ffffff" onchange="onSpecColorChange(this.value)"> <br> </br>
+          Shiny &gamma; <br>
+          <div class="slidecontainer"> <input type="range" min="10" max="100" id="specShine" value="24" onchange="onSpecShineChange(this.value)"></div> </br>
+        </ul>
+      </p>
+    </div> 
 
-      <div id="legend" style="position: absolute; z-index: 1; right: 20px; top: 50px; width:240px; height:300px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto">
-        
-         <p style="font-family: Helvetica; font-size:larger">
-          <b>Navigation Menu</b>     
-          <ul style="font-family: Helvetica; font-size:larger; " class="legend">
-            <li><a href="#null">Carbon</a></li> <br>
-            <li><a href="./hydro.html">Hydrogen</a></li><br>
-            <li><a href="./helium.html">Helium</a></li><br>
-            <li><a href="./oxygen.html">Oxygen </a></li><br>
-          </ul>
-        </p>
-        <p style="font-family: Helvetica; font-size:larger">
-          <b>Legend</b>
-          <ul style="font-family: Helvetica; font-size:larger" class="legend"> 
-            <li><span class="protons"></span> Protons</li>
-            <li><span class="neutrons"></span> Neutrons</li>
-            <li><span class="electrons"></span> Electrons</li>
-          </ul>
-        </p>
-      </div>
+    <button style="position: absolute; z-index: 1; right: 20px; bottom: 390px; height:50px; width:100px" onclick="myFunction()">Show/Hide InfoBox</button>
 
-     
-      <button style="position: absolute; z-index: 1; right: 20px; bottom: 270px; height:50px; width:100px" onclick="myFunction()">Show/Hide InfoBox</button>
+    <div id="infoBox" style="font-family: Helvetica; position: absolute; z-index: 1; right: 20px; bottom: 50px; width:350px; height:300px; background-color: white; border-style: dotted; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto; font-size: large">
+      <p style="font-family: Helvetica; font-size:larger">
+        <b>Controls</b>     
+        <ul style="font-family: Helvetica; font-size:larger;">
+          <li>Left Click & Drag: move the camera around</li>
+          <li>Double Click: reset camera position</li>
+          <li>Scroll Up/Down: Zoom Out/In the camera</li>
+          <li>Spacebar: start the game!</li>
+          <li><input type="checkbox" id="chbx" onchange="onSoundBoxChange(this);" /> Sound ON<br/>
+          <audio id="audioWhack"></audio>
+          </li>
+        </ul>
+      </p>   
+    </div>
 
-      <div id="infoBox" style="font-family: Helvetica; position: absolute; z-index: 1; right: 20px; bottom: 50px; width:350px; height:195px; background-color: white; border-style: dotted; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto; font-size: large">
-         Carbon (from Latin: carbo "coal") is a chemical element with the symbol C and atomic number 6. It is the second most abundant element in the human body by mass (about 18.5%) after oxygen. Carbon forms a vast number of compounds, more than any other element, with almost ten million compounds described to date, and yet that number is but a fraction of the number of theoretically possible compounds under standard conditions. For this reason, carbon has often been referred to as the "king of the elements"
-      </div>
+    <div id="legend" style="position: absolute; z-index: 1; left: 20px; bottom: 50px; width:350px; height:205px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto">
+      <p style="font-family: Helvetica; font-size:larger">
+        <b>Points</b>     
+        <ul style="font-family: Helvetica; font-size:larger;">
+          <li>Qui ci sono le info relative ai punti bro</li>
+        </ul>
+      </p>
+    </div>  
 
-      <div id="legend" style="position: absolute; z-index: 1; left: 20px; bottom: 50px; width:350px; height:205px; background-color: white; border-style: solid; border-color: purple; opacity: 0.5; padding: 5px 10px 5px 10px; overflow:auto">
-        <p style="font-family: Helvetica; font-size:larger">
-          <b>Controls</b>     
-          <ul style="font-family: Helvetica; font-size:larger;">
-            <li>Left Click & Drag: move the camera around</li>
-            <li>Double Click: reset camera position</li>
-            <li>Scroll Up/Down: Zoom Out/In the camera</li>
-            <li>Spacebar: quickly switch from internal/external view</li>
-          </ul>
-        </p>
-      </div>  
-  
 
   <!-- ADDITIONAL SCRIPTS -->
   <script>
@@ -171,7 +148,19 @@
         var b = result[2]/255.0;
         specularColor = [r,g,b];
       }
-
+      function onSoundBoxChange(e) {
+      var audio = document.getElementById('audioWhack');
+      if (e.checked) {
+        audio.src = "Assets/whack2.mp3";
+        audio.loop = true;
+        audio.play();
+      }
+      else {
+        audio.src = "";
+        audio.play();
+      }
+      e.blur();
+    }
    </script>
 
 </body>
