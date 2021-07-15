@@ -18,7 +18,7 @@ function sceneGraph(){
       };
 
       hammerNode = new Node();
-      hstep1= utils.multiplyMatrices(utils.MakeScaleMatrix(0.6),utils.MakeTranslateMatrix(0.0,3.0,3.0));
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.3,3.0),utils.MakeScaleMatrix(0.6));
       hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo = {
         buffer: hammerBuffer,
@@ -26,6 +26,7 @@ function sceneGraph(){
         initialPos: [0.0,3.0,3.0],
         curPos: [0.0,3.0,3.0],
         hammerDir: [0,0,-1],
+        moleHitted: null,
         status: "inactive",
       };
 
@@ -137,34 +138,7 @@ function sceneGraph(){
 }
 
 function updateLocalMatricesMole(){
-  //due possibilità: 
-  //--> talpe a secondi
-  //--> talpe a probabilità, preferisco questa onesto
-  
-  /*
-  difficultInSeconds = 0.5;
-
-  now = (new Date).getTime();
-  if((now-lastMoleTime)/1000 > difficultInSeconds){
-    lastMoleTime = now;
-
-    moles.forEach(mole => {
-      console.log(mole.drawInfo.moleStatus)
-      if(mole.drawInfo.moleStatus == "inactive"){
-        inactiveMole.push(mole)
-      }
-    })
-    if(inactiveMole.length > 0){
-      //fai l estrazione della mole da alzare
-      intero = Math.floor(Math.random()*inactiveMole.length)
-      moleExtracted = inactiveMole[intero];
-      console.log("Ho scelto la mole: " + intero)
-      moleExtracted.drawInfo.moleStatus = "go up";
-      moleExtracted.drawInfo.timeActivation = (new Date).getTime();
-    }
-  }
-  */
-  if(Math.floor(Math.random() * 1000) < 10){
+  if(Math.floor(Math.random() * 1000) < 20){
     // una volta che sono entrato la razio è questa:
     // mi faccio una lista di mole inattive e tra le mole inattive ne scelgo una causale
     // per farla alzare, 
@@ -209,24 +183,21 @@ function updateLocalMatricesMole(){
   // alla fine inactiveMole viene svuotato
 }
 
+function updateLocalMatricesHammer(){
+  if(hammerNode.drawInfo.status=="active"){
+    hammerNode.localMatrix=utils.multiplyMatrices(utils.MakeTranslateMatrix(increment[0],0,increment[2]),hammerNode.localMatrix);
+    
+    deltaQ = Quaternion.fromEuler(0,rot*rad,0,order = "ZXY")
+    q = deltaQ.mul(q)
 
-function updateLocalMatricesHammer(mole){
-  //if(hammerNode.status=="active"){
-            console.log("hole pos" + mole.drawInfo.initialPos)
-            console.log("hammer pos" + hammerNode.drawInfo.initialPos)
-            MHvec=minus(mole.drawInfo.initialPos,hammerNode.drawInfo.initialPos);
-            console.log(MHvec)
-            increment=division(MHvec,100.0); 
-            rot= -3;
-            console.log("increment" + increment)
-            hammerNode.localMatrix=utils.multiplyMatrices(utils.MakeTranslateMatrix(increment[0]+mole.drawInfo.inc,0,increment[2]),hammerNode.localMatrix);
-            hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,utils.MakeRotateXYZMatrix(rot,0,0));
-            if(count%45==0){
-                hstep1= utils.multiplyMatrices(utils.MakeScaleMatrix(0.6),utils.MakeTranslateMatrix(0.0,3.0,3.0));
-                hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
-                hammerNode.status="inactive";
-            }
-   // }
+    hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,q.toMatrix4());
+
+    if(hammerNode.localMatrix[11] <= hammerNode.drawInfo.moleHitted.drawInfo.initialPos[2]){
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.3,3.0),utils.MakeScaleMatrix(0.6));
+      hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
+      hammerNode.drawInfo.status="inactive";
+    }
+  }
 }
 
 
@@ -248,7 +219,6 @@ function updatePending(moleNode){
   // strip the ms
   timeDiff /= 1000;
 
-  // get seconds 
   if(timeDiff>1){
     moleNode.drawInfo.moleStatus = "go down";
     //console.log("Faccio go down")
@@ -266,8 +236,12 @@ function moleDown(moleNode){
 }
 
 function checkForMole(moleSelected){
-  // questo deve essere fatto solo quando si preme il martello
-  updateLocalMatricesHammer(moleSelected);
+  hammerNode.drawInfo.status = "active";
+  hammerNode.drawInfo.moleHitted = moleSelected;
+
+  MHvec= utils.minus(hammerNode.drawInfo.moleHitted.drawInfo.initialPos,hammerNode.drawInfo.initialPos);
+  increment= utils.division(MHvec,10.0); 
+  q = new Quaternion(1,0,0);
 
   if(moleSelected.drawInfo.moleStatus != "inactive"){
     console.log("oh hai fatto punto!")
@@ -275,42 +249,4 @@ function checkForMole(moleSelected){
   }else{
     console.log("no, hai toppato!")
   }
-}
-
-  function minus(a,b){
-    x = [];
-    for(var i = 0;i<=b.length-1;i++){
-        x.push(a[i] - b[i]);
-    }
-    return x    
-  }
-  
-function division(a,b){
-    x = [];
-    for(var i = 0;i<=a.length-1;i++){
-        x.push(a[i]/b);
-    }
-    return x    
-  }
-  
-  function sum(a,b){
-    x = [];
-    for(var i = 0;i<=b.length-1;i++){
-        x.push(a[i] + b[i]);
-    }
-    return x    
-  }
-  
-  function norm3(a){
-      x=Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2))
-  }
-  
-  
-
-function dot_product(vector1, vector2) {
-  let result = 0;
-  for (let i = 0; i < 3; i++) {
-    result += vector1[i] * vector2[i];
-  }
-  return result;
 }

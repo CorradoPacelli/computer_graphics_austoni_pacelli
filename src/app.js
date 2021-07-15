@@ -15,7 +15,7 @@ function initializeVariables(){
   LPosy=5;
   LPosz=0;
   LDirTheta=60;
-  LDirPhi=45;   
+  LDirPhi=45; 
   
   lastMoleTime =  (new Date).getTime();
   
@@ -198,7 +198,7 @@ var keyFunctionDown = function (e) {
   if (e.keyCode == 65) { //a
     checkForMole(moleNode4)
   } 
-  if(e.keyCode == 83) { //s
+  if(e.keyCode == 68) { //d
     checkForMole(moleNode5)
   }
   if(e.keyCode == 32) { //barra spaziatrice
@@ -239,12 +239,8 @@ function drawScene() {
 
   if(startGame){
     updateLocalMatricesMole();
+    updateLocalMatricesHammer();
   }
-  // questo deve essere fatto solo quando si preme il martello
-  mole=moleNode2;
-  count = count + 1;
-  updateLocalMatricesHammer(mole,count);
-
 
   // Update world matrices for each object
   cabinetNode.updateWorldMatrix();
