@@ -49,7 +49,7 @@ var count=0;
 var q;
 var MHvec;
 var increment;
-var rot = -0.8;
+var rot = -0.4;
 var rad = Math.PI / 180;
 
 //game status

@@ -18,7 +18,7 @@ function sceneGraph(){
       };
 
       hammerNode = new Node();
-      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.3,3.0),utils.MakeScaleMatrix(0.6));
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.5,3.0),utils.MakeScaleMatrix(0.6));
       hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo = {
         buffer: hammerBuffer,
@@ -193,7 +193,7 @@ function updateLocalMatricesHammer(){
     hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,q.toMatrix4());
 
     if(hammerNode.localMatrix[11] <= hammerNode.drawInfo.moleHitted.drawInfo.initialPos[2]){
-      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.3,3.0),utils.MakeScaleMatrix(0.6));
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.5,3.0),utils.MakeScaleMatrix(0.6));
       hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo.status="inactive";
     }
