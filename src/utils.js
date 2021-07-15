@@ -734,6 +734,44 @@ var utils={
 			perspective[15] = 0.0;	
 	
 			return perspective;
-		}
+		},
 	
+		minus:function(a,b){
+			x = [];
+			for(var i = 0;i<=b.length-1;i++){
+				x.push(a[i] - b[i]);
+			}
+			return x    
+		},
+		  
+		division:function(a,b){
+			x = [];
+			for(var i = 0;i<=a.length-1;i++){
+				x.push(a[i]/b);
+			}
+			return x    
+		},
+		  
+		sum:function (a,b){
+			x = [];
+			for(var i = 0;i<=b.length-1;i++){
+				x.push(a[i] + b[i]);
+			}
+			return x    
+		},
+		  
+		norm3:function (a){
+			x=Math.sqrt(Math.pow(a[0],2)+Math.pow(a[1],2)+Math.pow(a[2],2))
+		},
+		  
+		  
+		
+		dot_product:function(vector1, vector2) {
+		  let result = 0;
+		  for (let i = 0; i < 3; i++) {
+			result += vector1[i] * vector2[i];
+		  }
+		  return result;
+		}
+
 	}

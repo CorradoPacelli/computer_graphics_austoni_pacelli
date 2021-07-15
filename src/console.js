@@ -18,10 +18,16 @@ function sceneGraph(){
       };
 
       hammerNode = new Node();
-      hammerNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.0,4.0),utils.MakeRotateXMatrix(10));
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.3,3.0),utils.MakeScaleMatrix(0.6));
+      hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo = {
         buffer: hammerBuffer,
         vao: vao2,
+        initialPos: [0.0,3.0,3.0],
+        curPos: [0.0,3.0,3.0],
+        hammerDir: [0,0,-1],
+        moleHitted: null,
+        status: "inactive",
       };
 
       platformNode = new Node();
@@ -42,12 +48,13 @@ function sceneGraph(){
       moleNode1.drawInfo = {
         buffer: moleBuffer,
         vao: vao4,
-        initialPosY: 0.65,
+        initialPos: [-0.63,0.65,0.21],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: -0.003,
       };
-      //status are ---> inactive, go up, pending, go down
+      //status is ---> inactive, go up, pending, go down
 
       //mole 2 in alto al centro
       moleNode2 = new Node();
@@ -55,10 +62,11 @@ function sceneGraph(){
       moleNode2.drawInfo = {
         buffer: moleBuffer,
         vao: vao5,
-        initialPosY: 0.65,
+        initialPos: [0.0,0.65,0.21],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: 0,
       };
 
       //mole 3 in alto a destra
@@ -67,10 +75,11 @@ function sceneGraph(){
       moleNode3.drawInfo = {
         buffer: moleBuffer,
         vao: vao6,
-        initialPosY: 0.65,
+        initialPos: [0.63,0.65,0.21],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: 0.003,
       };
 
       //mole 4 in basso a sinistra
@@ -79,10 +88,11 @@ function sceneGraph(){
       moleNode4.drawInfo = {
         buffer: moleBuffer,
         vao: vao7,
-        initialPosY: 0.6,
+        initialPos: [-0.31,0.6,0.65],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: -0.003,
       };
 
       //mole 5 in basso a destra
@@ -91,10 +101,11 @@ function sceneGraph(){
       moleNode5.drawInfo = {
         buffer: moleBuffer,
         vao: vao8,
-        initialPosY: 0.6,
+        initialPos: [0.31,0.6,0.65],
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
+        inc: 0.003,
       };
       
       hammerNode.setParent(cabinetNode);
@@ -127,34 +138,7 @@ function sceneGraph(){
 }
 
 function updateLocalMatricesMole(){
-  //due possibilità: 
-  //--> talpe a secondi
-  //--> talpe a probabilità, preferisco questa onesto
-  
-  /*
-  difficultInSeconds = 0.5;
-
-  now = (new Date).getTime();
-  if((now-lastMoleTime)/1000 > difficultInSeconds){
-    lastMoleTime = now;
-
-    moles.forEach(mole => {
-      console.log(mole.drawInfo.moleStatus)
-      if(mole.drawInfo.moleStatus == "inactive"){
-        inactiveMole.push(mole)
-      }
-    })
-    if(inactiveMole.length > 0){
-      //fai l'estrazione della mole da alzare
-      intero = Math.floor(Math.random()*inactiveMole.length)
-      moleExtracted = inactiveMole[intero];
-      console.log("Ho scelto la mole: " + intero)
-      moleExtracted.drawInfo.moleStatus = "go up";
-      moleExtracted.drawInfo.timeActivation = (new Date).getTime();
-    }
-  }
-  */
-  if(Math.floor(Math.random() * 1000) < 5){
+  if(Math.floor(Math.random() * 1000) < 20){
     // una volta che sono entrato la razio è questa:
     // mi faccio una lista di mole inattive e tra le mole inattive ne scelgo una causale
     // per farla alzare, 
@@ -199,15 +183,28 @@ function updateLocalMatricesMole(){
   // alla fine inactiveMole viene svuotato
 }
 
+function updateLocalMatricesHammer(){
+  if(hammerNode.drawInfo.status=="active"){
+    hammerNode.localMatrix=utils.multiplyMatrices(utils.MakeTranslateMatrix(increment[0],0,increment[2]),hammerNode.localMatrix);
+    
+    deltaQ = Quaternion.fromEuler(0,rot*rad,0,order = "ZXY")
+    q = deltaQ.mul(q)
 
-function updateLocalMatricesHammer(moleSelected){
-  // scrivi qui l'anizmazione
+    hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,q.toMatrix4());
+
+    if(hammerNode.localMatrix[11] <= hammerNode.drawInfo.moleHitted.drawInfo.initialPos[2]){
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,2.3,3.0),utils.MakeScaleMatrix(0.6));
+      hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
+      hammerNode.drawInfo.status="inactive";
+    }
+  }
 }
+
 
 
 function moleUp(moleNode){
   //[7] == y
-  if(moleNode.localMatrix[7] <= moleNode.drawInfo.initialPosY + 0.49){
+  if(moleNode.localMatrix[7] <= moleNode.drawInfo.initialPos[1] + 0.49){
     moleNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0,0.1,0), moleNode.localMatrix);
   }else{
     moleNode.drawInfo.moleStatus = "pending";
@@ -222,7 +219,6 @@ function updatePending(moleNode){
   // strip the ms
   timeDiff /= 1000;
 
-  // get seconds 
   if(timeDiff>2){
     moleNode.drawInfo.moleStatus = "go down";
     //console.log("Faccio go down")
@@ -231,7 +227,7 @@ function updatePending(moleNode){
 
 function moleDown(moleNode){
   //[7] == y
-  if(moleNode.localMatrix[7] >= moleNode.drawInfo.initialPosY + 0.1){
+  if(moleNode.localMatrix[7] >= moleNode.drawInfo.initialPos[1] + 0.1){
     moleNode.localMatrix = utils.multiplyMatrices(utils.MakeTranslateMatrix(0,-0.1,0), moleNode.localMatrix);
   }else{
     moleNode.drawInfo.moleStatus = "inactive";
@@ -240,8 +236,12 @@ function moleDown(moleNode){
 }
 
 function checkForMole(moleSelected){
-  // questo deve essere fatto solo quando si preme il martello
-  updateLocalMatricesHammer(moleSelected);
+  hammerNode.drawInfo.status = "active";
+  hammerNode.drawInfo.moleHitted = moleSelected;
+
+  MHvec= utils.minus(hammerNode.drawInfo.moleHitted.drawInfo.initialPos,hammerNode.drawInfo.initialPos);
+  increment= utils.division(MHvec,10.0); 
+  q = new Quaternion(1,0,0);
 
   if(moleSelected.drawInfo.moleStatus != "inactive"){
     console.log("oh hai fatto punto!")

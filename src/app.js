@@ -15,7 +15,7 @@ function initializeVariables(){
   LPosy=5;
   LPosz=0;
   LDirTheta=60;
-  LDirPhi=45;   
+  LDirPhi=45; 
   
   lastMoleTime =  (new Date).getTime();
   
@@ -207,7 +207,7 @@ var keyFunctionDown = function (e) {
 }
 
 function updateLight(){
-  //to properly render new values when slider changes
+  //to properly render new values when slider changes   
     dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
     dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
 
@@ -236,8 +236,10 @@ function drawScene() {
   perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
 
   // update the local matrices for each mole
+
   if(startGame){
     updateLocalMatricesMole();
+    updateLocalMatricesHammer();
   }
 
   // Update world matrices for each object
