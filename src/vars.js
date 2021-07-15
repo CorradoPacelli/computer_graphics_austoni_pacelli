@@ -51,6 +51,8 @@ var MHvec;
 var increment;
 var rot = -0.4;
 var rad = Math.PI / 180;
+var hit = 0;
+var miss = 0;
 
 //game status
 var startGame;

@@ -249,7 +249,11 @@ function checkForMole(moleSelected){
   if(moleSelected.drawInfo.moleStatus != "inactive"){
     console.log("oh hai fatto punto!")
     moleSelected.drawInfo.moleStatus = "go down"
+    hit=hit+1;
+    document.getElementById("moleHit").innerHTML = hit;
   }else{
     console.log("no, hai toppato!")
+    miss=miss+1;
+    document.getElementById("moleMiss").innerHTML = miss;
   }
 }
