@@ -186,23 +186,40 @@ function resetCamera(event){
 
 //TODO cambiare posizione della funzione
 var keyFunctionDown = function (e) {
-  if (e.keyCode == 81) { //q
-    checkForMole(moleNode1)
-  }
-  if (e.keyCode == 87) { //w
-    checkForMole(moleNode2)
-  } 
-  if (e.keyCode == 69) { //e
-    checkForMole(moleNode3)
-  } 
-  if (e.keyCode == 65) { //a
-    checkForMole(moleNode4)
-  } 
-  if(e.keyCode == 68) { //d
-    checkForMole(moleNode5)
+  if(startGame){
+    if (e.keyCode == 81) { //q
+      checkForMole(moleNode1)
+    }
+    if (e.keyCode == 87) { //w
+      checkForMole(moleNode2)
+    } 
+    if (e.keyCode == 69) { //e
+      checkForMole(moleNode3)
+    } 
+    if (e.keyCode == 65) { //a
+      checkForMole(moleNode4)
+    } 
+    if(e.keyCode == 68) { //d
+      checkForMole(moleNode5)
+    }
   }
   if(e.keyCode == 32) { //barra spaziatrice
-    startGame = true
+    if(!startGame){
+      startGame = true
+      if (game_mode == 1){
+        difficulty = 7;
+        timePending = 2.5;
+      }
+      else if (game_mode == 2){
+        difficulty = 25;
+        timePending = 2;
+      }
+      else if (game_mode == 3){
+        difficulty = 30;
+        timePending = 0.6;
+      }
+      timeStartedGame = (new Date).getTime();
+    }
   }
 }
 
@@ -240,6 +257,7 @@ function drawScene() {
   if(startGame){
     updateLocalMatricesMole();
     updateLocalMatricesHammer();
+    checkForEnding();
   }
 
   // Update world matrices for each object
@@ -294,6 +312,7 @@ function main() {
   canvas.addEventListener("mousewheel", doMouseWheel, false);
   canvas.addEventListener("dblclick", resetCamera);
   window.addEventListener("keydown", keyFunctionDown, false);
+  remTime = document.getElementById("remTime"); 
 
   sceneGraph();
 

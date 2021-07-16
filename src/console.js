@@ -138,16 +138,6 @@ function sceneGraph(){
 }
 
 function updateLocalMatricesMole(){
-  console.log(game_mode);
-  if (game_mode == 1){
-      difficulty=10;
-  }
-  else if (game_mode == 2){
-      difficulty=25;
-  }
-  else if (game_mode == 3){
-      difficulty = 45;
-  }
   if(Math.floor(Math.random() * 1000) < difficulty){
     // una volta che sono entrato la razio è questa:
     // mi faccio una lista di mole inattive e tra le mole inattive ne scelgo una causale
@@ -185,6 +175,8 @@ function updateLocalMatricesMole(){
       updatePending(mole);
     }else if(mole.drawInfo.moleStatus == "go down"){
       moleDown(mole);
+    }else if(mole.drawInfo.moleStatus == "go hitted down"){
+      moleDownHitted(mole);
     }
   })
   // si, allora questo foreach qui lo fa sempre ad ogni frame non importa cosa
@@ -196,7 +188,6 @@ function updateLocalMatricesMole(){
 function updateLocalMatricesHammer(){
   if(hammerNode.drawInfo.status=="active"){
     hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,utils.MakeTranslateMatrix(increment[0],0,increment[2]));
-    
     
     deltaQ = Quaternion.fromEuler(0,rot*rad,0,order = "ZXY")
     q = deltaQ.mul(q)
@@ -213,8 +204,6 @@ function updateLocalMatricesHammer(){
   }
 }
 
-
-
 function moleUp(moleNode){
   //[7] == y
   if(moleNode.localMatrix[7] <= moleNode.drawInfo.initialPos[1] + 0.49){
@@ -226,15 +215,15 @@ function moleUp(moleNode){
 }
 
 function updatePending(moleNode){
-  //[7] == y
   moleNode.drawInfo.timeElapsed = (new Date).getTime();
   var timeDiff = moleNode.drawInfo.timeElapsed - moleNode.drawInfo.timeActivation; //in ms
   // strip the ms
   timeDiff /= 1000;
 
-  if(timeDiff>2){
+  if(timeDiff>timePending){
     moleNode.drawInfo.moleStatus = "go down";
-    //console.log("Faccio go down")
+    miss=miss+1;
+    document.getElementById("moleMiss").innerHTML = miss;
   }
 }
 
@@ -248,6 +237,19 @@ function moleDown(moleNode){
   }
 }
 
+function moleDownHitted(moleNode){
+  moleNode.drawInfo.timeElapsed = (new Date).getTime();
+  var timeDiff = moleNode.drawInfo.timeElapsed - moleNode.drawInfo.timeActivation; //in ms
+  // strip the ms
+  timeDiff /= 1000;
+  if(timeDiff>0.1){
+    moleNode.drawInfo.moleStatus = "go down";
+    hit=hit+1;
+    document.getElementById("moleHit").innerHTML = hit;
+    //console.log("Faccio go down")
+  }
+}
+
 function checkForMole(moleSelected){
   hammerNode.drawInfo.status = "active";
   hammerNode.drawInfo.moleHitted = moleSelected;
@@ -256,14 +258,17 @@ function checkForMole(moleSelected){
   increment= utils.division(MHvec,10.0); 
   q = new Quaternion(1,0,0);
 
-  if(moleSelected.drawInfo.moleStatus != "inactive"){
-    console.log("oh hai fatto punto!")
-    moleSelected.drawInfo.moleStatus = "go down"
-    hit=hit+1;
-    document.getElementById("moleHit").innerHTML = hit;
+  if(moleSelected.drawInfo.moleStatus == "pending"){
+    moleSelected.drawInfo.moleStatus = "go hitted down";
+    moleSelected.drawInfo.timeActivation = (new Date).getTime(); 
   }else{
-    console.log("no, hai toppato!")
     miss=miss+1;
     document.getElementById("moleMiss").innerHTML = miss;
   }
+}
+
+function resetMole(){
+  moles.forEach(mole => {
+    mole.localMatrix = utils.MakeTranslateMatrix(mole.drawInfo.initialPos[0],mole.drawInfo.initialPos[1],mole.drawInfo.initialPos[2]);
+  })
 }

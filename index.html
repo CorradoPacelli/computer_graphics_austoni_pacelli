@@ -196,6 +196,20 @@
             game_mode=3;
         }
     }
+    function checkForEnding() {
+      timeElapsedGame = (new Date).getTime();
+      var timeDiff = timeElapsedGame - timeStartedGame; //in ms
+      // strip the ms
+      timeDiff /= 1000;
+      timeDiff = Math.round(timeDiff)
+      remTime.innerHTML = (30-timeDiff) + " s";
+      if(timeDiff>=30){
+        console.log("Game Ended")
+        startGame = false;
+        remTime.innerHTML =  "30 s";
+        resetMole();
+      }
+    }
    </script>
 
 </body>

@@ -43,6 +43,7 @@ var lastMoleTime;
 var difficultInSeconds;
 var intero;
 var moles = [];
+var inactiveMole = [];
 var moleExtracted;
 var keys = [];
 var mole;
@@ -54,9 +55,12 @@ var rot = -0.4;
 var rad = Math.PI / 180;
 var hit = 0;
 var miss = 0;
+var timePending = 3;
 
 //game status
 var startGame;
+var timeStartedGame;
+var timeElapsedGame;
 
 //buffer for each object, which contains position, indices, texture etc.
 var cabinetBuffer;
