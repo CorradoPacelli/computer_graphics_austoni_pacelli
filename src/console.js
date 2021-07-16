@@ -138,7 +138,17 @@ function sceneGraph(){
 }
 
 function updateLocalMatricesMole(){
-  if(Math.floor(Math.random() * 1000) < 20){
+  console.log(game_mode);
+  if (game_mode == 1){
+      difficulty=10;
+  }
+  else if (game_mode == 2){
+      difficulty=25;
+  }
+  else if (game_mode == 3){
+      difficulty = 45;
+  }
+  if(Math.floor(Math.random() * 1000) < difficulty){
     // una volta che sono entrato la razio è questa:
     // mi faccio una lista di mole inattive e tra le mole inattive ne scelgo una causale
     // per farla alzare, 

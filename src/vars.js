@@ -23,6 +23,7 @@ var lookRadius;
 var specShine;
 var RotX;
 var RotY;
+var game_mode=1;
 
 //variables to extract obj model properties
 var objects = []; //scene graph objects array
