@@ -56,6 +56,7 @@ var rad = Math.PI / 180;
 var hit = 0;
 var miss = 0;
 var timePending = 3;
+var points=0;
 
 //game status
 var startGame;

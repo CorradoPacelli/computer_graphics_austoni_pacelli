@@ -223,7 +223,9 @@ function updatePending(moleNode){
   if(timeDiff>timePending){
     moleNode.drawInfo.moleStatus = "go down";
     miss=miss+1;
+    points=points-10;
     document.getElementById("moleMiss").innerHTML = miss;
+    document.getElementById("molePoints").innerHTML = points;
   }
 }
 
@@ -245,7 +247,9 @@ function moleDownHitted(moleNode){
   if(timeDiff>0.1){
     moleNode.drawInfo.moleStatus = "go down";
     hit=hit+1;
+    points=points+30;
     document.getElementById("moleHit").innerHTML = hit;
+    document.getElementById("molePoints").innerHTML = points;
     //console.log("Faccio go down")
   }
 }
@@ -263,7 +267,9 @@ function checkForMole(moleSelected){
     moleSelected.drawInfo.timeActivation = (new Date).getTime(); 
   }else{
     miss=miss+1;
+    points=points-20;
     document.getElementById("moleMiss").innerHTML = miss;
+    document.getElementById("molePoints").innerHTML = points;
   }
 }
 

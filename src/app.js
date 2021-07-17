@@ -5,7 +5,7 @@ function initializeVariables(){
   cx = 2.0;
   cy = 2.0;
   cz = 6.5;
-  elevation = 0.01;
+  elevation = -40;
   angle = 0.01;
   delta = 1.0;
   lookRadius = 5;
@@ -178,7 +178,7 @@ function resetCamera(event){
   cx = 2.0;
   cy = 2.0;
   cz = 6.5;
-  elevation = 0.01;
+  elevation = -20;
   angle = 0.01;
   delta = 1.0;
   lookRadius = 5;
@@ -208,8 +208,10 @@ var keyFunctionDown = function (e) {
       startGame = true
       hit=0;
       miss=0;
+      points=0;
       document.getElementById("moleHit").innerHTML = hit;
       document.getElementById("moleMiss").innerHTML = miss;
+      document.getElementById("molePoints").innerHTML = points;
       if (game_mode == 1){
         difficulty = 7;
         timePending = 2.5;
@@ -265,7 +267,7 @@ function drawScene() {
   }
 
   // Update world matrices for each object
-  cabinetNode.updateWorldMatrix();
+  cabinetNode.updateWorldMatrix();      
 
   // Compute all the matrices for rendering
   objects.forEach(function(object) {
