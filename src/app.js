@@ -206,6 +206,10 @@ var keyFunctionDown = function (e) {
   if(e.keyCode == 32) { //barra spaziatrice
     if(!startGame){
       startGame = true
+      hit=0;
+      miss=0;
+      document.getElementById("moleHit").innerHTML = hit;
+      document.getElementById("moleMiss").innerHTML = miss;
       if (game_mode == 1){
         difficulty = 7;
         timePending = 2.5;
