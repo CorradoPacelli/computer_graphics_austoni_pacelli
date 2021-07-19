@@ -8,8 +8,8 @@ out vec3 fsNormal;
 out vec2 uvFS;
 out vec3 fsPos;
 
-uniform mat4 matrix;
-uniform mat4 nMatrix;     //matrix to transform normals
+uniform mat4 matrix;        //world-view-projection
+uniform mat4 nMatrix;     //matrix to transform normals (that is built with the world-view one)
 uniform mat4 worldViewMatrix;
 
 void main() {

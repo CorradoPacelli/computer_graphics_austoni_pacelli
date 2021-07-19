@@ -238,7 +238,6 @@ function updateLight(){
     ambientL[0] = ambient;
     ambientL[1] = ambient;
     ambientL[2] = ambient;
-    console.log(ambientL);
 
     directionalLight = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
           -Math.sin(dirLightAlpha),
@@ -259,8 +258,9 @@ function drawScene() {
   viewMatrix = utils.MakeView(cx,cy,cz,elevation,-angle);
 
   //Light direction in camera space
-  var lightDirMatrix = utils.invertMatrix(utils.transposeMatrix(viewMatrix)); //transformation matrix 
-  var lightDirectionTransformed = utils.multiplyMatrix3Vector3(utils.sub3x3from4x4(lightDirMatrix), directionalLight); //transformed in camera space
+  var lightDirMatrix = utils.invertMatrix(utils.transposeMatrix(viewMatrix)); //transformation matrix  for the light direction
+  
+  var lightDirectionTransformed = utils.multiplyMatrix3Vector3(utils.sub3x3from4x4(lightDirMatrix), directionalLight); //light direction transformed in camera space
 
   perspectiveMatrix = utils.MakePerspective(90, gl.canvas.width/gl.canvas.height, 0.1, 100.0);
 
@@ -283,8 +283,7 @@ function drawScene() {
     bindingBuffers(object.drawInfo.vao, object.drawInfo.buffer);
 
     /*CAMERA SHADING SPACE: positions and normals must be transformed using both the View and 
-      the World transforms. Lights (i.e. direction and position) must be transformed together 
-      with objects and normals*/
+      the World transforms. Lights (i.e. direction and position) must be transformed just with the view matrix*/
     worldViewMatrix = utils.multiplyMatrices(viewMatrix, object.worldMatrix); 
     worldViewProjection = utils.multiplyMatrices(perspectiveMatrix, worldViewMatrix); 
 

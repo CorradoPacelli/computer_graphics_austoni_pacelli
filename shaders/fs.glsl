@@ -39,11 +39,11 @@ vec4 texcol = texture(u_texture, uvFS);
 
 // LAMBERT DIFFUSE 
 vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * texcol.rgb;
-//vec3 diffuseTerm = texcol.rgb*diffContr; 
+
 
 
 // PHONG SPECULAR
-vec3 reflectDir = -reflect(lightDirection, nNormal);
+vec3 reflectDir = -reflect(lightDirection, nNormal);		//it computes the reflection directions
 vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
 outColor = vec4(clamp(diffuseTerm + specularTerm + ambientLight*ambientColor, 0.0, 1.0),1.0);
 
@@ -53,7 +53,6 @@ else{   //object does not have texture
 
 // LAMBERT DIFFUSE 
 vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * mDiffColor;
-//vec3 diffuseTerm = mDiffColor*diffContr; 
 
 // PHONG SPECULAR
 vec3 reflectDir = -reflect(lightDirection, nNormal);
