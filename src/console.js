@@ -54,7 +54,7 @@ function sceneGraph(){
         timeElapsed: null,
         inc: 0.0,
       };
-      //status is ---> inactive, go up, pending, go down
+      //status is ---> inactive, go up, pending, go down, do hitted down
 
       //mole 2 in alto al centro
       moleNode2 = new Node();
