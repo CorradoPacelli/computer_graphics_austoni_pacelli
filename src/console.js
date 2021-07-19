@@ -18,7 +18,7 @@ function sceneGraph(){
       };
 
       hammerNode = new Node();
-      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.0,3.0),utils.MakeScaleMatrix(0.6));
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,0.8,3.0),utils.MakeScaleMatrix(0.6));
       hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo = {
         buffer: hammerBuffer,
@@ -52,7 +52,7 @@ function sceneGraph(){
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
-        inc: -0.003,
+        inc: 0.0,
       };
       //status is ---> inactive, go up, pending, go down
 
@@ -66,7 +66,7 @@ function sceneGraph(){
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
-        inc: 0,
+        inc: 0.0,
       };
 
       //mole 3 in alto a destra
@@ -79,7 +79,7 @@ function sceneGraph(){
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
-        inc: 0.003,
+        inc: 0.0,
       };
 
       //mole 4 in basso a sinistra
@@ -92,7 +92,7 @@ function sceneGraph(){
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
-        inc: -0.003,
+        inc: -0.05,
       };
 
       //mole 5 in basso a destra
@@ -105,7 +105,7 @@ function sceneGraph(){
         moleStatus: "inactive",
         timeActivation: null,
         timeElapsed: null,
-        inc: 0.003,
+        inc: -0.05,
       };
       
       hammerNode.setParent(cabinetNode);
@@ -187,6 +187,7 @@ function updateLocalMatricesMole(){
 
 function updateLocalMatricesHammer(){
   if(hammerNode.drawInfo.status=="active"){
+    hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,utils.MakeTranslateMatrix(0,hammerNode.drawInfo.moleHitted.drawInfo.inc,0));
     hammerNode.localMatrix=utils.multiplyMatrices(hammerNode.localMatrix,utils.MakeTranslateMatrix(increment[0],0,increment[2]));
     
     deltaQ = Quaternion.fromEuler(0,rot*rad,0,order = "ZXY")
@@ -196,8 +197,8 @@ function updateLocalMatricesHammer(){
 
     hammerNode.localMatrix=utils.multiplyMatrices(tmp,hammerNode.localMatrix);
 
-    if(hammerNode.localMatrix[11] <= hammerNode.drawInfo.moleHitted.drawInfo.initialPos[2]){
-      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,1.0,3.0),utils.MakeScaleMatrix(0.6));
+    if(hammerNode.localMatrix[11] <= hammerNode.drawInfo.moleHitted.drawInfo.initialPos[2] + 0.2){
+      hstep1= utils.multiplyMatrices(utils.MakeTranslateMatrix(0.0,0.8,3.0),utils.MakeScaleMatrix(0.6));
       hammerNode.localMatrix = utils.multiplyMatrices(hstep1,utils.MakeRotateXMatrix(10));
       hammerNode.drawInfo.status="inactive";
     }
