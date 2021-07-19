@@ -277,5 +277,6 @@ function checkForMole(moleSelected){
 function resetMole(){
   moles.forEach(mole => {
     mole.localMatrix = utils.MakeTranslateMatrix(mole.drawInfo.initialPos[0],mole.drawInfo.initialPos[1],mole.drawInfo.initialPos[2]);
+    mole.drawInfo.moleStatus = "inactive";
   })
 }

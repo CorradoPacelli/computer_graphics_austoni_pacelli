@@ -5,7 +5,7 @@ function initializeVariables(){
   cx = 2.0;
   cy = 2.0;
   cz = 6.5;
-  elevation = -40;
+  elevation = -20;
   angle = 0.01;
   delta = 1.0;
   lookRadius = 5;
@@ -138,97 +138,6 @@ function bindingBuffers(vao,objBuffer){
 
 }
 
-// event handler
-var mouseState = false;
-var lastMouseX = -100, lastMouseY = -100;
-
-function doMouseDown(event) {
-  lastMouseX = event.pageX;
-  lastMouseY = event.pageY;
-  mouseState = true;
-}
-function doMouseUp(event) {
-  lastMouseX = -100;
-  lastMouseY = -100;
-  mouseState = false;
-}
-
-function doMouseMove(event) {
-  if(mouseState) {
-    var dx = event.pageX - lastMouseX;
-    var dy = lastMouseY - event.pageY;
-    lastMouseX = event.pageX;
-    lastMouseY = event.pageY;
-
-    if((dx != 0) || (dy != 0)) {
-      angle = angle - 0.2 * dx;
-      elevation = elevation + 0.2 * dy;
-
-    }
-  }
-}
-
-function doMouseWheel(event) {
-  var nLookRadius = lookRadius + event.wheelDelta/300.0;          
-  if((nLookRadius > 2.0) && (nLookRadius < 40.0)) {
-    lookRadius = nLookRadius;
-  }
-}
-
-function resetCamera(event){
-  cx = 2.0;
-  cy = 2.0;
-  cz = 6.5;
-  elevation = -20;
-  angle = 0.01;
-  delta = 1.0;
-  lookRadius = 5;
-}
-
-//TODO cambiare posizione della funzione
-var keyFunctionDown = function (e) {
-  if(startGame){
-    if (e.keyCode == 81) { //q
-      checkForMole(moleNode1)
-    }
-    if (e.keyCode == 87) { //w
-      checkForMole(moleNode2)
-    } 
-    if (e.keyCode == 69) { //e
-      checkForMole(moleNode3)
-    } 
-    if (e.keyCode == 65) { //a
-      checkForMole(moleNode4)
-    } 
-    if(e.keyCode == 68) { //d
-      checkForMole(moleNode5)
-    }
-  }
-  if(e.keyCode == 32) { //barra spaziatrice
-    if(!startGame){
-      startGame = true
-      hit=0;
-      miss=0;
-      points=0;
-      document.getElementById("moleHit").innerHTML = hit;
-      document.getElementById("moleMiss").innerHTML = miss;
-      document.getElementById("molePoints").innerHTML = points;
-      if (game_mode == 1){
-        difficulty = 7;
-        timePending = 2.5;
-      }
-      else if (game_mode == 2){
-        difficulty = 25;
-        timePending = 2;
-      }
-      else if (game_mode == 3){
-        difficulty = 30;
-        timePending = 0.6;
-      }
-      timeStartedGame = (new Date).getTime();
-    }
-  }
-}
 
 function updateLight(){
   //to properly render new values when slider changes   
@@ -371,6 +280,97 @@ async function init(){
   //###################################################################################
 
   main();
+}
+
+//--------------------------------------------------- event handler
+var mouseState = false;
+var lastMouseX = -100, lastMouseY = -100;
+
+function doMouseDown(event) {
+  lastMouseX = event.pageX;
+  lastMouseY = event.pageY;
+  mouseState = true;
+}
+function doMouseUp(event) {
+  lastMouseX = -100;
+  lastMouseY = -100;
+  mouseState = false;
+}
+
+function doMouseMove(event) {
+  if(mouseState) {
+    var dx = event.pageX - lastMouseX;
+    var dy = lastMouseY - event.pageY;
+    lastMouseX = event.pageX;
+    lastMouseY = event.pageY;
+
+    if((dx != 0) || (dy != 0)) {
+      angle = angle - 0.2 * dx;
+      elevation = elevation + 0.2 * dy;
+
+    }
+  }
+}
+
+function doMouseWheel(event) {
+  var nLookRadius = lookRadius + event.wheelDelta/300.0;          
+  if((nLookRadius > 2.0) && (nLookRadius < 40.0)) {
+    lookRadius = nLookRadius;
+  }
+}
+
+function resetCamera(event){
+  cx = 2.0;
+  cy = 2.0;
+  cz = 6.5;
+  elevation = -20;
+  angle = 0.01;
+  delta = 1.0;
+  lookRadius = 5;
+}
+
+var keyFunctionDown = function (e) {
+  if(startGame){
+    if (e.keyCode == 81) { //q
+      checkForMole(moleNode1)
+    }
+    if (e.keyCode == 87) { //w
+      checkForMole(moleNode2)
+    } 
+    if (e.keyCode == 69) { //e
+      checkForMole(moleNode3)
+    } 
+    if (e.keyCode == 65) { //a
+      checkForMole(moleNode4)
+    } 
+    if(e.keyCode == 68) { //d
+      checkForMole(moleNode5)
+    }
+  }
+  if(e.keyCode == 32) { //barra spaziatrice
+    if(!startGame){
+      startGame = true
+      hit=0;
+      miss=0;
+      points=0;
+      document.getElementById("moleHit").innerHTML = hit;
+      document.getElementById("moleMiss").innerHTML = miss;
+      document.getElementById("molePoints").innerHTML = points;
+      if (game_mode == 1){
+        difficulty = 7;
+        timePending = 2.5;
+      }
+      else if (game_mode == 2){
+        difficulty = 25;
+        timePending = 2;
+      }
+      else if (game_mode == 3){
+        difficulty = 30;
+        timePending = 0.6;
+      }
+      timeStartedGame = (new Date).getTime();
+    }
+  }
 }
 
 window.onload = init;
