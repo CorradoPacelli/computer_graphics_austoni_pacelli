@@ -15,6 +15,7 @@ uniform vec3 lightColor;
 uniform int hasTexture;
 uniform float specShine;
 uniform vec3 specularColor;
+uniform vec3 ambientLight;
 
 /* The Phong shading algorithm computes the color of each pixel separately. This is thus a per-pixel 
 shading algorithm. In this case, vertex normal vectors are interpolated to approximate the 
@@ -26,7 +27,7 @@ unitary size */
 
 void main() {
 
-vec3 ambientLight = vec3(0.05, 0.05, 0.05);
+vec3 ambientColor=vec3(0.5,0.5,0.5);
 vec3 nNormal = normalize(fsNormal);
 vec3 eyeDirection = fsPos; //observer direction obtained by normalizing the object position (Camera space)
 
@@ -44,7 +45,7 @@ vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * te
 // PHONG SPECULAR
 vec3 reflectDir = -reflect(lightDirection, nNormal);
 vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
-outColor = vec4(clamp(diffuseTerm + specularTerm, 0.0, 1.0),1.0);
+outColor = vec4(clamp(diffuseTerm + specularTerm + ambientLight*ambientColor, 0.0, 1.0),1.0);
 
 }
 
@@ -58,7 +59,7 @@ vec3 diffuseTerm = lightColor * clamp(dot(nNormal, lightDirection),0.0,1.0) * mD
 vec3 reflectDir = -reflect(lightDirection, nNormal);
 vec3 specularTerm  = lightColor * pow(clamp(dot(eyeDirection, reflectDir), 0.0, 1.0),specShine) * specularColor;
 
-outColor = vec4(clamp(diffuseTerm + specularTerm, 0.0, 1.0),1.0);
+outColor = vec4(clamp(diffuseTerm + specularTerm + ambientLight*ambientColor, 0.0, 1.0),1.0);
 }
 
 }

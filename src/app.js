@@ -86,6 +86,7 @@ function initializeVariables(){
   specColorHandle = gl.getUniformLocation(program, 'specularColor');
   worldViewMatrixLocation = gl.getUniformLocation(program, 'worldViewMatrix');
   specShineHandle = gl.getUniformLocation(program, 'specShine');
+    ambientLightHandle = gl.getUniformLocation(program, 'ambientLight');
   
   viewMatrix = utils.MakeView(cx, cy, cz, elevation, -angle);
   
@@ -233,6 +234,11 @@ function updateLight(){
   //to properly render new values when slider changes   
     dirLightAlpha = -utils.degToRad(document.getElementById("dirAlpha").value);
     dirLightBeta  = -utils.degToRad(document.getElementById("dirBeta").value);
+    ambient = document.getElementById("ambLight").value;
+    ambientL[0] = ambient;
+    ambientL[1] = ambient;
+    ambientL[2] = ambient;
+    console.log(ambientL);
 
     directionalLight = [-Math.cos(dirLightAlpha) * Math.cos(dirLightBeta),
           -Math.sin(dirLightAlpha),
@@ -290,6 +296,8 @@ function drawScene() {
     gl.uniform3fv(lightDirectionHandle,  lightDirectionTransformed);
     gl.uniform1f(specShineHandle, specShine);
     gl.uniform3fv(specColorHandle, specularColor);
+    
+    gl.uniform3fv(ambientLightHandle, ambientL);
 
     if(object.drawInfo.buffer.texcoord != null){
       gl.uniform1i(hasTexture, 1);

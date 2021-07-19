@@ -84,6 +84,8 @@ var LPosz;
 var LDirTheta;
 var LDirPhi;
 var spotDir=[];
+var ambientL=[1, 1, 1];
+var ambient = 0.05;
 
 //object colors
 var cabinetColor;
